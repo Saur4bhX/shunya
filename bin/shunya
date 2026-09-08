@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SHUNYA_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VERSION_FILE="$SHUNYA_ROOT/VERSION"
+
+version() {
+    cat "$VERSION_FILE"
+}
+
+help() {
+    cat <<'HELP'
+Shunya
+
+Usage:
+  shunya <command>
+
+Commands:
+  version    Show Shunya version
+  help       Show this help message
+
+Planned commands:
+  install    Install Shunya
+  update     Update Shunya
+  doctor     Diagnose Shunya
+  reset      Reset Shunya configuration
+
+Options:
+  -h, --help     Show this help message
+  -v, --version  Show Shunya version
+HELP
+}
+
+error() {
+    printf 'Error: %s\n' "$1" >&2
+    exit 1
+}
+
+case "${1:-help}" in
+    version|-v|--version)
+        version
+        ;;
+    help|-h|--help)
+        help
+        ;;
+    install|update|doctor|reset)
+        error "'$1' is not implemented yet"
+        ;;
+    *)
+        error "unknown command: $1"
+        ;;
+esac
