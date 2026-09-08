@@ -2,143 +2,139 @@
 
 ## Purpose
 
-Shunya is a structured layer on top of a supported Arch Linux installation.
+Shunya is organized into four primary boundaries:
 
-The architecture separates universal Shunya behavior from hardware-specific adaptation.
+- Core
+- Hardware
+- Installer
+- Machine-local
 
-## Conceptual Architecture
+The architecture separates portable Shunya behavior from hardware-specific
+adaptation and machine-specific state.
 
-                    SHUNYA
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-        CORE                  HARDWARE
-          │                       │
-     Hyprland                  GPU
-     Quickshell                Display
-     Theme                     Audio
-     Launcher                  Network
-     Notifications             Battery
-     Keybindings               Touchpad
-     Applications              Bluetooth
-          │                       │
-          └───────────┬───────────┘
-                      │
-                  INSTALLER
-                      │
-                      ▼
-                 SHUNYA SYSTEM
+## Core
 
-## Layers
+Core contains the portable Shunya experience and behavior.
 
-### Core
+Examples:
 
-Core contains behavior intended to be common across supported Shunya systems.
-
-Examples include:
-
-- Desktop environment configuration
-- Window management
+- Desktop configuration
+- Window manager configuration
 - Shell/UI configuration
-- Theme system
 - Launcher
 - Notifications
 - Keybindings
-- Standard application configuration
+- Theme definitions
+- Application defaults
 
-Core should not contain assumptions about one specific laptop.
+Core must not contain assumptions about one specific laptop or hardware model.
 
-### Hardware
+## Hardware
 
-Hardware contains detection and adaptation logic for machine-specific characteristics.
+Hardware contains adapters and detection logic for physical hardware.
 
-Hardware categories include:
+Examples:
 
 - GPU
 - Display
 - Audio
 - Network
 - Bluetooth
-- Battery and power
-- Touchpad and input
+- Battery/power
+- Touchpad/input
 - External displays
 
-Hardware logic should adapt the system without unnecessarily duplicating the Core.
+Hardware logic should expose what the system needs without making the Core
+dependent on a particular machine.
 
-### Installer
+## Installer
 
-The Installer is responsible for turning a supported Arch installation into a Shunya system.
+Installer is responsible for transforming a supported Arch Linux system into
+a Shunya system.
 
-Its eventual responsibilities include:
+Responsibilities include:
 
 - Preflight checks
 - Hardware detection
 - Package installation
 - Configuration deployment
 - Machine-specific handling
-- Error handling
 - Logging
-- Validation
-- Recovery/rollback expectations
+- Error handling
+- Backup/recovery
+- Post-install validation
 
-The full installer is not implemented at this stage.
+The installer must not become the owner of Core configuration.
 
-### Machine-Local Configuration
+## Machine-local
 
-Machine-local configuration contains values that should not become universal Shunya defaults.
+Machine-local contains information that belongs only to one physical
+installation.
 
-Examples may include:
+Examples:
 
-- Device-specific overrides
-- Local hardware choices
-- User-specific paths
-- Local preferences that are intentionally outside the universal Core
+- Machine-specific overrides
+- Local hardware quirks
+- Host-specific configuration
+- Local state that must not be committed as portable Shunya configuration
 
-Machine-local configuration must remain clearly separated from the reusable Shunya configuration.
+Machine-local data must not define the general Shunya architecture.
 
-## Layer Interaction
+## Dependency Direction
 
-The intended flow is:
+The intended relationship is:
 
-    Supported Arch
-          │
-          ▼
-      Installer
-          │
-          ├──────► Hardware Detection
-          │              │
-          │              ▼
-          │        Hardware Adapters
-          │
-          ▼
-         Core
-          │
-          ▼
+    SHUNYA
+      |
+      +-- Core
+      |
+      +-- Hardware
+      |
+      +-- Installer
+      |
+      +-- Machine-local
+
+Core should remain portable.
+
+Hardware adapts physical systems to Shunya requirements.
+
+Installer coordinates deployment.
+
+Machine-local provides controlled exceptions where necessary.
+
+## Separation Principle
+
+When a requirement can be implemented universally, it belongs in Core.
+
+When behavior depends on hardware capabilities, it belongs in Hardware.
+
+When behavior concerns installation or deployment, it belongs in Installer.
+
+When behavior exists only because of one particular machine, it belongs in
+Machine-local.
+
+Machine-specific behavior must not silently leak into Core.
+
+## Conceptual Flow
+
+    Portable Shunya
+          |
+      +---+---+
+      |       |
+     Core   Hardware
+      |       |
+      +---+---+
+          |
+       Installer
+          |
+          v
     Shunya System
 
-Hardware detection informs hardware adapters.
+## Architectural Rule
 
-Hardware adapters provide the necessary machine-specific behavior.
+Prefer the simplest portable solution.
 
-Core provides the common Shunya experience.
+Introduce hardware-specific or machine-specific logic only when there is a
+clear technical reason.
 
-The Installer coordinates deployment and validation.
-
-## Architecture Rules
-
-1. Core must remain hardware-agnostic where practical.
-2. Hardware-specific behavior belongs in the Hardware layer.
-3. Machine-local values must not silently become universal defaults.
-4. The Installer should coordinate layers rather than duplicate their logic.
-5. Dependencies should be introduced deliberately.
-6. Configuration ownership must remain clear.
-7. Significant system changes should be explicit and recoverable.
-8. The architecture must remain understandable on a fresh clone.
-9. The reference laptop must not define universal Shunya assumptions.
-10. Avoid abstractions that do not provide meaningful value.
-
-## Current Boundary
-
-At the Foundation stage, the architecture is being defined before substantial implementation.
-
-Desktop configuration, hardware adapters, and the full installer are intentionally deferred until the Core Skeleton is established.
+Shunya should remain understandable, reproducible, and recoverable.
