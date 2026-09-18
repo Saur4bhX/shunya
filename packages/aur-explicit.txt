@@ -1,0 +1,2 @@
+brave-bin
+hypr-kdeconnect-fix-git

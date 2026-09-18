@@ -1,0 +1,16 @@
+#!/bin/sh
+
+PHONE="192.168.1.39:5555"
+
+adb connect "$PHONE" >/dev/null 2>&1 || {
+    notify-send "Phone" "ADB connection failed"
+    exit 1
+}
+
+exec scrcpy \
+    --stay-awake \
+    --audio-source=playback\
+    --audio-dup\
+    --window-title="Motorola" \
+    --window-width=360 \
+    --window-height=720

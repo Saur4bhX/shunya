@@ -13,3 +13,17 @@
 
 # Local machine-specific data
 machine/local/
+
+# Machine/local secrets
+phone.env
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Syncthing identity
+cert.pem
+key.pem
+
+# Browser profiles
+BraveSoftware/

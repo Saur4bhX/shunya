@@ -1,0 +1,1 @@
+-- Shunya Core appearance configuration
