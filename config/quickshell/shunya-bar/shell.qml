@@ -1,3 +1,5 @@
+//@ pragma UseQApplication
+
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
@@ -88,8 +90,9 @@ ShellRoot {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 18
 
-		Volume {}
-		NetworkStatus {}
+		Tray { barWindow: bar }
+                Volume {}
+                NetworkStatus {}
                 Battery {}
             }
         }

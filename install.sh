@@ -67,6 +67,7 @@ for relative_path in \
     quickshell/shunya-bar/NetworkStatus.qml \
     quickshell/shunya-bar/Battery.qml \
     quickshell/shunya-notifications/shell.qml \
+    quickshell/shunya-bar/Tray.qml \
     xdg-desktop-portal/portals.conf
 do
     source_file="$REPO/config/$relative_path"
