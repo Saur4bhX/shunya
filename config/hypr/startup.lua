@@ -1,4 +1,5 @@
 hl.on("hyprland.start", function()
     hl.exec_cmd("kdeconnect-indicator")
     hl.exec_cmd("hypridle")
+    hl.exec_cmd("quickshell -c shunya-bar")
 end)

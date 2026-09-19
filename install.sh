@@ -62,6 +62,10 @@ for relative_path in \
     qutebrowser/bookmarks/urls \
     qutebrowser/quickmarks \
     quickshell/shunya/shell.qml \
+    quickshell/shunya-bar/shell.qml \
+    quickshell/shunya-bar/Volume.qml \
+    quickshell/shunya-bar/NetworkStatus.qml \
+    quickshell/shunya-bar/Battery.qml \
     xdg-desktop-portal/portals.conf
 do
     source_file="$REPO/config/$relative_path"
