@@ -54,11 +54,13 @@ if [[ -f "$REPO/config/fish/config.fish" ]]; then
 fi
 
 # Restore additional tracked application configuration.
+# Preserve replaced files as numbered backups.
 for relative_path in \
     kitty/kitty.conf \
     dolphinrc \
     qutebrowser/bookmarks/urls \
     qutebrowser/quickmarks \
+    quickshell/shunya/shell.qml \
     xdg-desktop-portal/portals.conf
 do
     source_file="$REPO/config/$relative_path"
@@ -98,6 +100,7 @@ systemctl --user daemon-reload
 
 # Static portal services should NOT be enabled manually.
 # Hyprland/DBus will activate them when required.
+# The Quickshell launcher is started by its Hyprland keybinding.
 
 # ------------------------------------------------------------
 # 6. Verification
@@ -110,6 +113,7 @@ for cmd in \
     hyprctl \
     fish \
     dolphin \
+    quickshell \
     scrcpy \
     adb \
     kdeconnect-cli \
@@ -133,3 +137,4 @@ echo "  - Browser accounts/profiles"
 echo "  - SSH/SFTP credentials"
 echo
 echo "See SETUP.md for details."
+
