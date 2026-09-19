@@ -1,29 +1,33 @@
 #!/usr/bin/env bash
 
 ADB=/usr/bin/adb
+OFFICE_IP="192.168.1.39"
+PORT=5555
 
-# Already connected? Just launch.
-if $ADB get-state >/dev/null 2>&1; then
-    exec scrcpy --audio-source=playback --audio-dup
+# Remove dead/stale network transports
+$ADB disconnect >/dev/null 2>&1
+
+# 1. Try office Wi-Fi
+$ADB connect "$OFFICE_IP:$PORT" >/dev/null 2>&1
+
+if $ADB -s "$OFFICE_IP:$PORT" shell echo OK 2>/dev/null | grep -q OK; then
+    exec scrcpy -s "$OFFICE_IP:$PORT" \
+        --audio-source=playback \
+        --audio-dup
 fi
 
-# Room mode: phone is the hotspot.
-# Its address is normally the default gateway.
-PHONE_IP=$(ip route | awk '/^default/ {print $3; exit}')
+# 2. Try Motorola hotspot
+HOTSPOT_IP=$(ip route | awk '/^default/ {print $3; exit}')
 
-if [[ -n "$PHONE_IP" ]]; then
-    $ADB connect "$PHONE_IP:5555" >/dev/null 2>&1
+if [[ -n "$HOTSPOT_IP" ]]; then
+    $ADB connect "$HOTSPOT_IP:$PORT" >/dev/null 2>&1
+
+    if $ADB -s "$HOTSPOT_IP:$PORT" shell echo OK 2>/dev/null | grep -q OK; then
+        exec scrcpy -s "$HOTSPOT_IP:$PORT" \
+            --audio-source=playback \
+            --audio-dup
+    fi
 fi
 
-# Office/external Wi-Fi:
-# ADB may discover the paired phone automatically via mDNS.
-sleep 1
-
-if $ADB get-state >/dev/null 2>&1; then
-    exec scrcpy --audio-source=playback --audio-dup
-fi
-
-echo "Phone unavailable."
-echo "Room/hotspot mode: run 'adb tcpip 5555' over USB once if necessary."
-echo "Wi-Fi mode: enable Wireless debugging."
+notify-send "SHUNYA Phone" "Motorola not reachable"
 exit 1
