@@ -18,6 +18,7 @@ greetd-tuigreet
 grim
 grub
 hyprland
+hyprlock
 intel-ucode
 kdeconnect
 kitty
