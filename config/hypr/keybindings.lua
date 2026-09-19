@@ -107,6 +107,23 @@ hl.bind(
     { mouse = true }
 )
 
+-- Save a selected screen area
+hl.bind(
+    "Print",
+    hl.dsp.exec_cmd(
+        [[sh -c 'area=$(slurp) || exit; mkdir -p "$HOME/Pictures/Screenshots" && grim -g "$area" "$HOME/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S-%N).png"']]
+    ),
+    { release = true }
+)
+
+-- Save the entire screen
+hl.bind(
+    "SHIFT + Print",
+    hl.dsp.exec_cmd(
+        [[sh -c 'mkdir -p "$HOME/Pictures/Screenshots" && grim "$HOME/Pictures/Screenshots/$(date +%Y%m%d-%H%M%S-%N).png"']]
+    ),
+    { release = true }
+)
 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"))
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"))

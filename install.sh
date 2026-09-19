@@ -33,7 +33,8 @@ fi
 # ------------------------------------------------------------
 
 echo "==> Restoring configuration..."
-
+xdg-user-dirs-update
+mkdir -p "$HOME/Pictures/Screenshots"
 mkdir -p \
     "$HOME/.config/hypr" \
     "$HOME/.config/bin" \
