@@ -23,8 +23,8 @@ if [[ -f "$REPO/packages/aur-explicit.txt" ]]; then
         echo "==> Installing AUR packages..."
         paru -S --needed - < "$REPO/packages/aur-explicit.txt"
     else
-        echo "==> paru not installed."
-        echo "    Install paru, then rerun this installer."
+        echo "ERROR: Install paru, then rerun this installer." >&2
+        exit 1
     fi
 fi
 
@@ -41,16 +41,16 @@ mkdir -p \
     "$HOME/.config/fish"
 
 if [[ -d "$REPO/config/hypr" ]]; then
-    cp -a "$REPO/config/hypr/." "$HOME/.config/hypr/"
+    cp -a --backup=numbered -- "$REPO/config/hypr/." "$HOME/.config/hypr/"
 fi
 
 if [[ -d "$REPO/config/bin" ]]; then
-    cp -a "$REPO/config/bin/." "$HOME/.config/bin/"
-    chmod +x "$HOME/.config/bin/"*
+    cp -a --backup=numbered -- "$REPO/config/bin/." "$HOME/.config/bin/"
 fi
 
 if [[ -f "$REPO/config/fish/config.fish" ]]; then
-    cp "$REPO/config/fish/config.fish" \
+    cp -a --backup=numbered -- "$REPO/config/fish/config.fish" \
+    "$HOME/.config/fish/config.fish"
        "$HOME/.config/fish/config.fish"
 fi
 
@@ -92,15 +92,17 @@ done
 
 echo "==> Enabling services..."
 
-if systemctl list-unit-files bluetooth.service \
-    >/dev/null 2>&1; then
-    sudo systemctl enable --now bluetooth.service
-fi
+for service in bluetooth.service sshd.service; do
+    load_state=$(systemctl show "$service" --property=LoadState --value)
 
-if systemctl list-unit-files sshd.service \
-    >/dev/null 2>&1; then
-    sudo systemctl enable --now sshd.service
-fi
+    if [[ "$load_state" == "loaded" ]]; then
+        sudo systemctl enable --now "$service"
+    else
+        printf 'ERROR: %s is not loaded (%s).\n' \
+            "$service" "$load_state" >&2
+        exit 1
+    fi
+done
 
 # ------------------------------------------------------------
 # 5. User services
@@ -119,22 +121,25 @@ systemctl --user daemon-reload
 echo
 echo "==> Checking SHUNYA components..."
 
+missing=0
+
 for cmd in \
-    hyprctl \
-    fish \
-    dolphin \
-    quickshell \
-    scrcpy \
-    adb \
-    kdeconnect-cli \
-    ssh
+    hyprctl fish kitty brave qutebrowser dolphin quickshell \
+    hyprlock hypridle scrcpy adb kdeconnect-cli ssh \
+    wpctl brightnessctl grim slurp notify-send xdg-user-dirs-update
 do
     if command -v "$cmd" >/dev/null 2>&1; then
         printf "  [OK] %s\n" "$cmd"
     else
         printf "  [MISSING] %s\n" "$cmd"
+        missing=1
     fi
 done
+
+if (( missing )); then
+    echo "ERROR: Required components are missing." >&2
+    exit 1
+fi
 
 echo
 echo "==> Automatic restoration complete."
