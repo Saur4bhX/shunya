@@ -17,6 +17,7 @@ greetd
 greetd-tuigreet
 grim
 grub
+gvfs
 hypridle
 hyprland
 hyprlock
@@ -24,6 +25,7 @@ intel-ucode
 kdeconnect
 kitty
 less
+libnotify
 libreoffice-still
 linux
 linux-firmware
@@ -32,6 +34,7 @@ ntfs-3g
 openssh
 os-prober
 pipewire-pulse
+polkit-kde-agent
 quickshell
 qutebrowser
 rsync
