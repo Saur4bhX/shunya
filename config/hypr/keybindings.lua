@@ -126,6 +126,12 @@ hl.bind(
 )
 
 hl.bind(mod .. " + Escape", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(
+    mod .. " + SHIFT + Escape",
+    hl.dsp.exec_cmd(
+        [[pkill -u "$USER" -fx 'quickshell -c shunya-power' || quickshell -c shunya-power]]
+    )
+)
 
 -- Multimedia and Brightness
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"))
