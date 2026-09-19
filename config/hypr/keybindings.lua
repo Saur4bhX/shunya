@@ -6,9 +6,12 @@ local terminal = "kitty"
 local browser = "brave"
 local file_manager = "dolphin"
 
+-- Applications
+
 hl.bind(mod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mod .. " + T", 	    hl.dsp.exec_cmd(terminal))
 hl.bind(mod .. " + W",      hl.dsp.exec_cmd(browser))
+hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd(file_manager))
 
 hl.bind(mod .. " + Q", hl.dsp.window.close())
