@@ -64,6 +64,8 @@ for relative_path in \
     quickshell/shunya/shell.qml \
     quickshell/shunya-bar/shell.qml \
     quickshell/shunya-bar/Volume.qml \
+    quickshell/shunya-bar/VolumeOsd.qml \
+    quickshell/shunya-bar/BrightnessOsd.qml \
     quickshell/shunya-bar/NetworkStatus.qml \
     quickshell/shunya-bar/Battery.qml \
     quickshell/shunya-notifications/shell.qml \

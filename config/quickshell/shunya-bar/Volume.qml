@@ -22,6 +22,9 @@ Text {
     }
 
     MouseArea {
+        VolumeOsd {
+            audio: root.audio
+        }
         anchors.fill: parent
         enabled: root.audio !== null
 

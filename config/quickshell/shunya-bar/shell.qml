@@ -6,6 +6,8 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 
 ShellRoot {
+    BrightnessOsd {}
+
     SystemClock {
         id: clock
         precision: SystemClock.Minutes

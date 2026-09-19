@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${1:-}" in
+    up)   change="+5%" ;;
+    down) change="5%-" ;;
+    *) exit 2 ;;
+esac
+
+result=$(brightnessctl -d intel_backlight -m set "$change")
+IFS=, read -r device class current percent maximum <<< "$result"
+
+quickshell -c shunya-bar ipc call -- brightness show "${percent%\%}" \
+    >/dev/null 2>&1 || true

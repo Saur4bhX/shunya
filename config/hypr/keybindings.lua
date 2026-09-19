@@ -138,8 +138,15 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"))
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
 
-hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightnessctl set +5%"))
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"))
+hl.bind(
+    "XF86MonBrightnessUp",
+    hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/bin/brightness up")
+)
+
+hl.bind(
+    "XF86MonBrightnessDown",
+    hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/bin/brightness down")
+)
 
 hl.bind("SUPER + P", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.config/bin/phone"))
 
