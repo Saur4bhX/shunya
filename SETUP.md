@@ -169,7 +169,18 @@ Do not commit:
 These are excluded intentionally and must be recreated or paired on a
 new machine.
 
-## 12. Verification
+## 12. Volume and brightness OSD
+
+The shunya-bar Quickshell process provides both popups.
+
+- Volume and mute changes are detected through PipeWire.
+- Brightness keys run ~/.config/bin/brightness, which updates
+  intel_backlight through brightnessctl and signals Quickshell.
+- Popups close automatically after 1.5 seconds.
+- On different hardware, update the backlight device in the
+  brightness script using the output of brightnessctl -l.
+
+## 13. Verification
 
 After restoring SHUNYA, verify:
 
