@@ -1,2 +1,3 @@
+android-sdk-platform-tools
 brave-bin
 hypr-kdeconnect-fix-git

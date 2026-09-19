@@ -1,16 +1,29 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-PHONE="192.168.1.39:5555"
+ADB=/usr/bin/adb
 
-adb connect "$PHONE" >/dev/null 2>&1 || {
-    notify-send "Phone" "ADB connection failed"
-    exit 1
-}
+# Already connected? Just launch.
+if $ADB get-state >/dev/null 2>&1; then
+    exec scrcpy --audio-source=playback --audio-dup
+fi
 
-exec scrcpy \
-    --stay-awake \
-    --audio-source=playback\
-    --audio-dup\
-    --window-title="Motorola" \
-    --window-width=360 \
-    --window-height=720
+# Room mode: phone is the hotspot.
+# Its address is normally the default gateway.
+PHONE_IP=$(ip route | awk '/^default/ {print $3; exit}')
+
+if [[ -n "$PHONE_IP" ]]; then
+    $ADB connect "$PHONE_IP:5555" >/dev/null 2>&1
+fi
+
+# Office/external Wi-Fi:
+# ADB may discover the paired phone automatically via mDNS.
+sleep 1
+
+if $ADB get-state >/dev/null 2>&1; then
+    exec scrcpy --audio-source=playback --audio-dup
+fi
+
+echo "Phone unavailable."
+echo "Room/hotspot mode: run 'adb tcpip 5555' over USB once if necessary."
+echo "Wi-Fi mode: enable Wireless debugging."
+exit 1
