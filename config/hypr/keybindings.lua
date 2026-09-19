@@ -14,6 +14,14 @@ hl.bind(mod .. " + W",      hl.dsp.exec_cmd(browser))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd(file_manager))
 
+-- Tap left Super alone to toggle the launcher
+hl.bind(
+    "SUPER + SUPER_L",
+    hl.dsp.exec_cmd(
+        [[pkill -u "$USER" -fx 'quickshell -c shunya' || quickshell -c shunya]]
+    ),
+    { release = true }
+)
 -- Window and session controls
 hl.bind(mod .. " + Q", hl.dsp.window.close())
 hl.bind(mod .. " + SHIFT + Q", hl.dsp.exit())

@@ -15,6 +15,7 @@ git
 github-cli
 greetd
 greetd-tuigreet
+grim
 grub
 hyprland
 intel-ucode
@@ -29,12 +30,16 @@ ntfs-3g
 openssh
 os-prober
 pipewire-pulse
+quickshell
 qutebrowser
+rsync
 scrcpy
+slurp
 sshfs
 sudo
 syncthing
 tree
+unrar
 vim
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
