@@ -53,6 +53,27 @@ if [[ -f "$REPO/config/fish/config.fish" ]]; then
        "$HOME/.config/fish/config.fish"
 fi
 
+# Restore additional tracked application configuration.
+for relative_path in \
+    kitty/kitty.conf \
+    dolphinrc \
+    qutebrowser/bookmarks/urls \
+    qutebrowser/quickmarks \
+    xdg-desktop-portal/portals.conf
+do
+    source_file="$REPO/config/$relative_path"
+    target_file="$HOME/.config/$relative_path"
+
+    [[ -f "$source_file" ]] || continue
+
+    if [[ -f "$target_file" ]] && cmp -s "$source_file" "$target_file"; then
+        continue
+    fi
+
+    mkdir -p "$(dirname "$target_file")"
+    cp -a --backup=numbered -- "$source_file" "$target_file"
+done
+
 # ------------------------------------------------------------
 # 4. System services
 # ------------------------------------------------------------
