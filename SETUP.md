@@ -1,0 +1,206 @@
+# SHUNYA Setup Guide
+
+This repository reproduces the SHUNYA Arch Linux + Hyprland environment.
+
+## 1. Base System
+
+Install Arch Linux and ensure networking and Git are available.
+
+Clone this repository:
+
+    git clone <SHUNYA-REPOSITORY-URL> ~/shunya
+    cd ~/shunya
+
+## 2. Packages
+
+Official Arch packages are recorded in:
+
+    packages/pacman-explicit.txt
+
+Install them with:
+
+    sudo pacman -S --needed - < packages/pacman-explicit.txt
+
+AUR packages are recorded in:
+
+    packages/aur-explicit.txt
+
+After installing paru:
+
+    paru -S --needed - < packages/aur-explicit.txt
+
+Debug split packages are intentionally excluded from the AUR manifest.
+
+## 3. Hyprland Configuration
+
+The Hyprland configuration is stored in:
+
+    config/hypr/
+
+Restore it with:
+
+    mkdir -p ~/.config/hypr
+    cp -a config/hypr/. ~/.config/hypr/
+
+SHUNYA uses Lua-based Hyprland configuration rather than a conventional
+hyprland.conf-only setup.
+
+## 4. Custom Scripts
+
+Scripts are stored in:
+
+    config/bin/
+
+Restore them with:
+
+    mkdir -p ~/.config/bin
+    cp -a config/bin/. ~/.config/bin/
+    chmod +x ~/.config/bin/*
+
+Ensure ~/.config/bin is in PATH.
+
+## 5. Fish
+
+Fish configuration is stored in:
+
+    config/fish/config.fish
+
+Restore with:
+
+    mkdir -p ~/.config/fish
+    cp config/fish/config.fish ~/.config/fish/config.fish
+
+## 6. Phone Integration
+
+SHUNYA uses:
+
+- KDE Connect
+- scrcpy
+- Android Debug Bridge
+- SSH/SFTP
+- Motorola Edge 60 Pro integration
+
+The launcher is:
+
+    ~/.config/bin/phone
+
+### External Wi-Fi
+
+Connect the laptop and phone to the same Wi-Fi network.
+
+Enable:
+
+    Developer options -> Wireless debugging
+
+Pair the laptop with Android Wireless Debugging when setting up a new
+machine.
+
+After the machine has been paired, the phone script can use the existing
+ADB connection/discovery.
+
+### Phone Hotspot
+
+Android Wireless Debugging is unavailable while this phone is providing
+the mobile hotspot.
+
+For hotspot operation, classic ADB TCP mode is used.
+
+Connect USB when initialization is required and run:
+
+    adb tcpip 5555
+
+Disconnect USB.
+
+The phone script obtains the default gateway from the laptop routing
+table and attempts:
+
+    adb connect <phone-hotspot-gateway>:5555
+
+Then scrcpy is launched.
+
+ADB TCP mode may need to be initialized again after a phone reboot or
+ADB reset.
+
+### scrcpy Audio
+
+The working SHUNYA configuration uses:
+
+    scrcpy --audio-source=playback --audio-dup
+
+## 7. KDE Connect
+
+Install KDE Connect on both devices.
+
+Pair the phone and computer while they are reachable on the same
+network.
+
+Pairing information and private device identity are NOT stored in this
+Git repository. Pairing must therefore be performed once on a fresh
+installation.
+
+## 8. SFTP
+
+OpenSSH is used on the laptop.
+
+Enable the SSH server:
+
+    sudo systemctl enable --now sshd
+
+The Android file manager can connect to the laptop using SFTP.
+
+Passwords, SSH private keys and host-specific credentials must never be
+committed to this repository.
+
+## 9. Bluetooth
+
+Enable Bluetooth:
+
+    sudo systemctl enable --now bluetooth
+
+Device pairing is intentionally not reproduced through Git. Pair
+Bluetooth devices again on a fresh installation.
+
+## 10. File Manager and Browser
+
+SHUNYA uses:
+
+- Dolphin as the file manager
+- Brave as the primary cross-device browser
+- qutebrowser as the keyboard-first browser
+
+Application profiles, browser data, login credentials and other private
+state are not stored in Git.
+
+## 11. Machine-Specific State
+
+Do not commit:
+
+- passwords
+- SSH private keys
+- ADB private keys
+- Syncthing certificates/private keys
+- browser profiles
+- phone.env
+- temporary files
+- machine-specific secrets
+
+These are excluded intentionally and must be recreated or paired on a
+new machine.
+
+## 12. Verification
+
+After restoring SHUNYA, verify:
+
+    git status
+    adb devices
+    kdeconnect-cli -l
+    systemctl status bluetooth
+    systemctl status sshd
+
+Test the phone integration with:
+
+    phone
+
+The goal is that everything reproducible is restored from Git while
+credentials, cryptographic identities and device-specific secrets remain
+outside the repository.
