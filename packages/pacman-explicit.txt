@@ -17,6 +17,7 @@ greetd
 greetd-tuigreet
 grim
 grub
+hypridle
 hyprland
 hyprlock
 intel-ucode
