@@ -14,6 +14,7 @@ hl.bind(mod .. " + W",      hl.dsp.exec_cmd(browser))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd(file_manager))
 
+-- Window and session controls
 hl.bind(mod .. " + Q", hl.dsp.window.close())
 hl.bind(mod .. " + SHIFT + Q", hl.dsp.exit())
 
@@ -71,6 +72,33 @@ hl.bind(mod .. " + CTRL + UP",
 hl.bind(mod .. " + CTRL + DOWN",
     hl.dsp.window.resize({ x = 0, y = 40, relative = true }),
     { repeating = true })
+
+hl.bind(
+    mod .. " + F",
+    hl.dsp.window.fullscreen({
+        mode = "fullscreen",
+        action = "toggle",
+    })
+)
+
+hl.bind(
+    mod .. " + SHIFT + Space",
+    hl.dsp.window.float({ action = "toggle" })
+)
+
+-- Move and resize windows with the mouse
+hl.bind(
+    mod .. " + mouse:272",
+    hl.dsp.window.drag(),
+    { mouse = true }
+)
+
+hl.bind(
+    mod .. " + mouse:273",
+    hl.dsp.window.resize(),
+    { mouse = true }
+)
+
 
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"))
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"))
