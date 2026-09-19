@@ -106,7 +106,7 @@ echo "==> Automatic restoration complete."
 echo
 echo "Manual setup still required for:"
 echo "  - KDE Connect pairing"
-echo "  - Android Wireless Debugging pairing"
+echo "  - Android USB authorization and classic ADB TCP initialization"
 echo "  - Bluetooth device pairing"
 echo "  - Browser accounts/profiles"
 echo "  - SSH/SFTP credentials"

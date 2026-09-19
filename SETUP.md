@@ -84,42 +84,24 @@ The launcher is:
 
     ~/.config/bin/phone
 
-### External Wi-Fi
+### Office Wi-Fi and Motorola Hotspot
 
-Connect the laptop and phone to the same Wi-Fi network.
+Both networks use classic ADB TCP on port 5555.
+Android Wireless Debugging and mDNS are not used.
 
-Enable:
+After a phone reboot or ADB reset, connect an authorized USB
+cable and initialize TCP mode:
 
-    Developer options -> Wireless debugging
+    /usr/bin/adb -d tcpip 5555
 
-Pair the laptop with Android Wireless Debugging when setting up a new
-machine.
+Disconnect USB, then run:
 
-After the machine has been paired, the phone script can use the existing
-ADB connection/discovery.
+    phone
 
-### Phone Hotspot
+The current launcher tries office IP 192.168.1.39 first,
+then the laptop's default gateway for Motorola hotspot access.
 
-Android Wireless Debugging is unavailable while this phone is providing
-the mobile hotspot.
-
-For hotspot operation, classic ADB TCP mode is used.
-
-Connect USB when initialization is required and run:
-
-    adb tcpip 5555
-
-Disconnect USB.
-
-The phone script obtains the default gateway from the laptop routing
-table and attempts:
-
-    adb connect <phone-hotspot-gateway>:5555
-
-Then scrcpy is launched.
-
-ADB TCP mode may need to be initialized again after a phone reboot or
-ADB reset.
+Automatic detection of changed office DHCP addresses is pending.
 
 ### scrcpy Audio
 
