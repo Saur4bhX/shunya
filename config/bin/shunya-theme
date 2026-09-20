@@ -312,7 +312,13 @@ css = f"""@define-color theme_bg_color {palette["background"]};
 @define-color accent_fg_color {palette["onAccent"]};
 
 selection,
+*:selected,
 row:selected,
+treeview.view:selected,
+treeview.view:selected:focus,
+iconview:selected,
+list row:selected,
+listbox row:selected,
 listview row:selected,
 columnview row:selected,
 gridview child:selected {{
