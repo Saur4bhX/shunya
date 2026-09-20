@@ -27,6 +27,47 @@ action = sys.argv[3]
 
 data = json.loads(theme_path.read_text())
 
+def update_auto_accent(data):
+    if data.get("accentMode") != "auto":
+        return
+
+    wallpaper = data.get("wallpaper")
+    if not wallpaper:
+        return
+
+    source_index = str(data.get("sourceColorIndex", 0))
+
+    import subprocess
+
+    result = subprocess.run(
+        [
+            "matugen",
+            "image",
+            wallpaper,
+            "--source-color-index",
+            source_index,
+            "-j",
+            "hex",
+            "--dry-run",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    matugen_data = json.loads(result.stdout)
+    colors = matugen_data["colors"]
+
+    data.setdefault("dark", {})
+    data.setdefault("light", {})
+
+    data["dark"]["accent"] = colors["primary"]["dark"]["color"]
+    data["light"]["accent"] = colors["primary"]["light"]["color"]
+    data["dark"]["onAccent"] = colors["on_primary"]["dark"]["color"]
+    data["light"]["onAccent"] = colors["on_primary"]["light"]["color"]
+
+update_auto_accent(data)
+
 current = data.get("mode", "dark")
 
 if action == "toggle":

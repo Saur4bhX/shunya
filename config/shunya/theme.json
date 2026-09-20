@@ -21,5 +21,6 @@
     "border": "#cbc5d0",
     "accent": "#8e4957",
     "onAccent": "#ffffff"
-  }
+  },
+  "sourceColorIndex": 0
 }

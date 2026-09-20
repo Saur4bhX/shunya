@@ -88,6 +88,8 @@ Qt6 uses qt6ct with Kvantum. Qt5 support is intentionally not installed unless a
 
 The current visual style is Catppuccin-inspired but uses SHUNYA's own palette and design language.
 
+When accentMode is auto, shunya-theme regenerates dark and light accent colours from the configured wallpaper using Matugen. sourceColorIndex selects the wallpaper colour candidate.
+
 ## 6. Fish
 
 Fish configuration is stored in:
