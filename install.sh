@@ -91,7 +91,10 @@ if [[ -d "$REPO/config/Kvantum" ]]; then
     mkdir -p "$HOME/.config/Kvantum"
     cp -a --backup=numbered -- "$REPO/config/Kvantum/." "$HOME/.config/Kvantum/"
 fi
-
+if [[ -x "$HOME/.config/bin/shunya-theme" ]]; then
+    theme_mode=$(python3 -c 'import json, pathlib; print(json.loads((pathlib.Path.home()/".config/shunya/theme.json").read_text()).get("mode", "dark"))')
+    "$HOME/.config/bin/shunya-theme" "$theme_mode"
+fi
 # ------------------------------------------------------------
 # 4. System services
 # ------------------------------------------------------------
@@ -132,7 +135,8 @@ missing=0
 for cmd in \
     hyprctl fish kitty brave qutebrowser dolphin quickshell \
     hyprlock hypridle scrcpy adb kdeconnect-cli ssh \
-    wpctl brightnessctl grim slurp notify-send xdg-user-dirs-update
+    wpctl brightnessctl grim slurp notify-send xdg-user-dirs-update \
+    matugen kvantummanager gsettings pavucontrol python3
 do
     if command -v "$cmd" >/dev/null 2>&1; then
         printf "  [OK] %s\n" "$cmd"
