@@ -67,16 +67,57 @@ PanelWindow {
         anchors.fill: parent
         anchors.margins: 20
         spacing: 12
+RowLayout {
+    Layout.fillWidth: true
 
-        Text {
-            text: "SHUNYA"
-            color: root.palette.accent
-            font.family: root.themeData.fontFamily
-            font.pointSize: root.themeData.fontSize
-            font.letterSpacing: 3
-        }
+    Text {
+        text: "SHUNYA"
+        color: root.palette.accent
+        font.family: root.themeData.fontFamily
+        font.pointSize: root.themeData.fontSize
+        font.letterSpacing: 3
+    }
 
-        TextField {
+    Item {
+        Layout.fillWidth: true
+    }
+Text {
+    text: "Theme"
+    color: root.palette.muted
+    font.family: root.themeData.fontFamily
+    font.pointSize: root.themeData.fontSize
+}
+Button {
+    text: root.themeData.mode === "dark" ? "Light" : "Dark"
+
+    contentItem: Text {
+        text: parent.text
+        color: root.palette.text
+        font.family: root.themeData.fontFamily
+        font.pointSize: root.themeData.fontSize
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+    }
+
+    background: Rectangle {
+        implicitWidth: 64
+        implicitHeight: 30
+        radius: 6
+        color: root.palette.surface
+        border.width: 1
+        border.color: root.palette.border
+    }
+
+    onClicked: Quickshell.execDetached({
+        command: [
+            Quickshell.env("HOME") + "/.config/bin/shunya-theme",
+            "toggle"
+        ]
+    })
+}
+}
+
+	TextField {
             id: search
 
             Layout.fillWidth: true
@@ -175,7 +216,7 @@ PanelWindow {
             }
         }
 
-        Text {
+	Text {
             text: "↑ ↓ select    Enter launch    Esc close"
             color: root.palette.muted
             font.family: root.themeData.fontFamily
