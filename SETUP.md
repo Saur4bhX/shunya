@@ -77,6 +77,20 @@ Usage:
     shunya-theme light
     shunya-theme toggle
 
+Accent control:
+
+    shunya-theme auto-accent
+    shunya-theme freeze-accent
+    shunya-theme set-accent '#RRGGBB'
+
+`auto-accent` derives dark and light accents from the configured wallpaper using Matugen.
+
+`freeze-accent` keeps the currently generated accents and disables automatic regeneration.
+
+`set-accent` uses the supplied colour as a source colour and lets Matugen derive suitable dark/light accent and on-accent colours.
+
+Theme accent state is stored in `theme.json` using `accentMode`. Fixed custom colours also use `accentSource`.
+
 Tracked Kvantum themes:
 
     config/Kvantum/SHUNYA/
