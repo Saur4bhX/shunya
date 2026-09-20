@@ -59,7 +59,36 @@ Restore them with:
 
 Ensure ~/.config/bin is in PATH.
 
-## 5. Fish
+## 5. Theme System
+
+SHUNYA uses a unified light/dark theme across Quickshell, Hyprlock, GTK and Qt6/Kvantum.
+
+Theme state is stored in:
+
+    ~/.config/shunya/theme.json
+
+Theme switching is handled by:
+
+    ~/.config/bin/shunya-theme
+
+Usage:
+
+    shunya-theme dark
+    shunya-theme light
+    shunya-theme toggle
+
+Tracked Kvantum themes:
+
+    config/Kvantum/SHUNYA/
+    config/Kvantum/SHUNYA-Light/
+
+GTK3 and GTK4 follow the selected SHUNYA mode.
+
+Qt6 uses qt6ct with Kvantum. Qt5 support is intentionally not installed unless a Qt5 application requires it.
+
+The current visual style is Catppuccin-inspired but uses SHUNYA's own palette and design language.
+
+## 6. Fish
 
 Fish configuration is stored in:
 
@@ -70,7 +99,7 @@ Restore with:
     mkdir -p ~/.config/fish
     cp config/fish/config.fish ~/.config/fish/config.fish
 
-## 6. Phone Integration
+## 7. Phone Integration
 
 SHUNYA uses:
 
@@ -109,7 +138,7 @@ The working SHUNYA configuration uses:
 
     scrcpy --audio-source=playback --audio-dup
 
-## 7. KDE Connect
+## 8. KDE Connect
 
 Install KDE Connect on both devices.
 
@@ -120,7 +149,7 @@ Pairing information and private device identity are NOT stored in this
 Git repository. Pairing must therefore be performed once on a fresh
 installation.
 
-## 8. SFTP
+## 9. SFTP
 
 OpenSSH is used on the laptop.
 
@@ -133,7 +162,7 @@ The Android file manager can connect to the laptop using SFTP.
 Passwords, SSH private keys and host-specific credentials must never be
 committed to this repository.
 
-## 9. Bluetooth
+## 10. Bluetooth
 
 Enable Bluetooth:
 
@@ -142,7 +171,7 @@ Enable Bluetooth:
 Device pairing is intentionally not reproduced through Git. Pair
 Bluetooth devices again on a fresh installation.
 
-## 10. File Manager and Browser
+## 11. File Manager and Browser
 
 SHUNYA uses:
 
@@ -153,7 +182,7 @@ SHUNYA uses:
 Application profiles, browser data, login credentials and other private
 state are not stored in Git.
 
-## 11. Machine-Specific State
+## 12. Machine-Specific State
 
 Do not commit:
 
@@ -169,7 +198,7 @@ Do not commit:
 These are excluded intentionally and must be recreated or paired on a
 new machine.
 
-## 12. Volume and brightness OSD
+## 13. Volume and brightness OSD
 
 The shunya-bar Quickshell process provides both popups.
 
@@ -180,7 +209,7 @@ The shunya-bar Quickshell process provides both popups.
 - On different hardware, update the backlight device in the
   brightness script using the output of brightnessctl -l.
 
-## 13. Verification
+## 14. Verification
 
 After restoring SHUNYA, verify:
 

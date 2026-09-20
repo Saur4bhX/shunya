@@ -51,7 +51,6 @@ fi
 if [[ -f "$REPO/config/fish/config.fish" ]]; then
     cp -a --backup=numbered -- "$REPO/config/fish/config.fish" \
     "$HOME/.config/fish/config.fish"
-       "$HOME/.config/fish/config.fish"
 fi
 
 # Restore additional tracked application configuration.
@@ -87,6 +86,11 @@ do
     mkdir -p "$(dirname "$target_file")"
     cp -a --backup=numbered -- "$source_file" "$target_file"
 done
+
+if [[ -d "$REPO/config/Kvantum" ]]; then
+    mkdir -p "$HOME/.config/Kvantum"
+    cp -a --backup=numbered -- "$REPO/config/Kvantum/." "$HOME/.config/Kvantum/"
+fi
 
 # ------------------------------------------------------------
 # 4. System services

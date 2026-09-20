@@ -36,6 +36,7 @@ networkmanager
 ntfs-3g
 openssh
 os-prober
+pavucontrol
 pipewire-pulse
 polkit-kde-agent
 qt6ct
