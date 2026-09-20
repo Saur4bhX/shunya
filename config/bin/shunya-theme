@@ -194,6 +194,43 @@ print(mode)
 PY
 
 mode=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["mode"])' "$THEME_FILE")
+python3 - "$THEME_FILE" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+data = json.load(open(sys.argv[1]))
+
+themes = {
+    "dark": Path.home() / ".config/Kvantum/SHUNYA/SHUNYA.kvconfig",
+    "light": Path.home() / ".config/Kvantum/SHUNYA-Light/SHUNYA-Light.kvconfig",
+}
+
+for mode, path in themes.items():
+    if not path.exists():
+        continue
+
+    palette = data[mode]
+    text = path.read_text()
+
+    replacements = {
+        "highlight.color": palette["accent"],
+        "inactive.highlight.color": palette["border"],
+        "highlight.text.color": palette["onAccent"],
+        "link.color": palette["accent"],
+        "progress.indicator.text.color": palette["onAccent"],
+    }
+
+    for key, value in replacements.items():
+        text = re.sub(
+            rf"(?m)^{re.escape(key)}=.*$",
+            f"{key}={value}",
+            text,
+        )
+
+    path.write_text(text)
+PY
 
 if [[ "$mode" == "dark" ]]; then
     prefer_dark=1
