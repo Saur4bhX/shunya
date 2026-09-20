@@ -8,10 +8,10 @@ action="${1:-}"
 accent_value="${2:-}"
 
 case "$action" in
-    dark|light|toggle|freeze-accent|auto-accent|set-accent)
+    dark|light|toggle|apply|freeze-accent|auto-accent|set-accent)
         ;;
     *)
-        echo "Usage: shunya-theme {dark|light|toggle|freeze-accent|auto-accent|set-accent [#RRGGBB]}" >&2
+        echo "Usage: shunya-theme {dark|light|toggle|apply|freeze-accent|auto-accent|set-accent [#RRGGBB]}" >&2
         exit 2
         ;;
 esac
@@ -127,6 +127,9 @@ elif action == "freeze-accent":
     data["accentMode"] = "fixed"
     mode = current
 
+elif action == "apply":
+    mode = current
+
 elif action == "toggle":
     mode = "light" if current == "dark" else "dark"
 
@@ -230,6 +233,38 @@ mode=$(python3 -c \
     "$THEME_FILE"
 )
 
+
+# ---------------------------------------------------------------------------
+# Hyprland palette
+# ---------------------------------------------------------------------------
+
+if command -v hyprctl >/dev/null 2>&1 &&
+   hyprctl monitors -j >/dev/null 2>&1; then
+
+    read -r hypr_accent hypr_border < <(
+        python3 - "$THEME_FILE" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+
+palette = data[data["mode"]]
+
+print(
+    palette["accent"].lstrip("#"),
+    palette["border"].lstrip("#"),
+)
+PY
+    )
+
+    hyprctl eval \
+        "hl.config({ general = { col = {
+            active_border = \"rgba(${hypr_accent}ff)\",
+            inactive_border = \"rgba(${hypr_border}ff)\"
+        } } })" \
+        >/dev/null
+fi
 
 # ---------------------------------------------------------------------------
 # Qt5ct + Qt6ct palettes
@@ -803,3 +838,214 @@ if [[ "$mode" == "dark" ]]; then
 else
     kvantummanager --set SHUNYA-Light >/dev/null
 fi
+
+# ---------------------------------------------------------------------------
+# Kitty palette
+# ---------------------------------------------------------------------------
+
+python3 - "$THEME_FILE" <<'PY'
+import json
+import os
+import sys
+from pathlib import Path
+
+theme_file = sys.argv[1]
+
+with open(theme_file) as f:
+    data = json.load(f)
+
+mode = data["mode"]
+p = data[mode]
+
+
+# ---------------------------------------------------------------------------
+# Color helpers
+# ---------------------------------------------------------------------------
+
+def rgb(value):
+    value = value.lstrip("#")
+    return tuple(
+        int(value[i:i + 2], 16)
+        for i in (0, 2, 4)
+    )
+
+
+def hexrgb(value):
+    return "#{:02x}{:02x}{:02x}".format(*value)
+
+
+def mix(a, b, amount):
+    """
+    Mix color A toward color B.
+
+    amount = 0.0 -> entirely A
+    amount = 1.0 -> entirely B
+    """
+    a = rgb(a)
+    b = rgb(b)
+
+    return hexrgb(tuple(
+        round(x + (y - x) * amount)
+        for x, y in zip(a, b)
+    ))
+
+
+accent = p["accent"]
+on_accent = p["onAccent"]
+
+
+# ---------------------------------------------------------------------------
+# SHUNYA terminal surfaces
+#
+# Light mode:
+#   - wallpaper-derived
+#   - near-white
+#   - crisp dark foreground
+#   - stronger surface separation
+#
+# Dark mode:
+#   - follows normal SHUNYA surfaces
+#   - slightly brighter foreground for sharper text
+# ---------------------------------------------------------------------------
+
+if mode == "light":
+    kitty_background = mix("#ffffff", accent, 0.055)
+    kitty_surface = mix("#f2f2f4", accent, 0.10)
+
+    # Dark, crisp foreground with only a tiny wallpaper tint.
+    kitty_text = mix("#211f26", accent, 0.035)
+
+    kitty_border = mix("#b8b7c0", accent, 0.14)
+
+else:
+    kitty_background = p["background"]
+    kitty_surface = p["surface"]
+
+    # Slightly brighten SHUNYA dark text for stronger terminal contrast.
+    kitty_text = mix(p["text"], "#ffffff", 0.08)
+
+    kitty_border = p["border"]
+
+
+# ---------------------------------------------------------------------------
+# ANSI palette
+#
+# These retain semantic terminal identities.
+#
+# Wallpaper influence is deliberately tiny in light mode so red stays red,
+# green stays green, blue stays blue, etc.
+#
+# The palette is intentionally vivid and crisp rather than pastel.
+# ---------------------------------------------------------------------------
+
+dark_ansi = [
+    "#302e38",  # 0  black
+    "#ff6b7a",  # 1  red
+    "#8bd450",  # 2  green
+    "#f3c969",  # 3  yellow
+    "#6fa8ff",  # 4  blue
+    "#c792ff",  # 5  magenta
+    "#55d6d3",  # 6  cyan
+    "#d8d5df",  # 7  white
+
+    "#696574",  # 8  bright black
+    "#ff8591",  # 9  bright red
+    "#a7e36b",  # 10 bright green
+    "#ffda7d",  # 11 bright yellow
+    "#8dbbff",  # 12 bright blue
+    "#d8aaff",  # 13 bright magenta
+    "#72e4e1",  # 14 bright cyan
+    "#ffffff",  # 15 bright white
+]
+
+
+light_ansi_base = [
+    "#403b48",  # 0  black
+    "#d7264f",  # 1  red
+    "#42a62a",  # 2  green
+    "#d99000",  # 3  yellow
+    "#246cf2",  # 4  blue
+    "#9a45e5",  # 5  magenta
+    "#08979c",  # 6  cyan
+    "#8e8995",  # 7  white
+
+    "#625c69",  # 8  bright black
+    "#ef405f",  # 9  bright red
+    "#59b83b",  # 10 bright green
+    "#eba600",  # 11 bright yellow
+    "#3c82ff",  # 12 bright blue
+    "#ad5cf0",  # 13 bright magenta
+    "#13aeb2",  # 14 bright cyan
+    "#28242d",  # 15 bright white
+]
+
+
+if mode == "light":
+    # Very subtle wallpaper harmony while preserving vivid ANSI hues.
+    ansi = [
+        mix(color, accent, 0.025)
+        for color in light_ansi_base
+    ]
+else:
+    ansi = dark_ansi
+
+
+# ---------------------------------------------------------------------------
+# Generate Kitty theme
+# ---------------------------------------------------------------------------
+
+lines = [
+    "# Generated by shunya-theme. Do not edit.",
+    "",
+
+    "# Core",
+    f"background {kitty_background}",
+    f"foreground {kitty_text}",
+    "",
+
+    "# Selection",
+    f"selection_background {accent}",
+    f"selection_foreground {on_accent}",
+    "",
+
+    "# Cursor",
+    f"cursor {accent}",
+    f"cursor_text_color {on_accent}",
+    "",
+
+    "# Links",
+    f"url_color {accent}",
+    "",
+
+    "# Window borders",
+    f"active_border_color {accent}",
+    f"inactive_border_color {kitty_border}",
+    "",
+
+    "# Tabs",
+    f"active_tab_background {accent}",
+    f"active_tab_foreground {on_accent}",
+    f"inactive_tab_background {kitty_surface}",
+    f"inactive_tab_foreground {kitty_text}",
+    f"tab_bar_background {kitty_background}",
+    "",
+]
+
+
+for i, color in enumerate(ansi):
+    lines.append(f"color{i} {color}")
+
+lines.append("")
+
+
+# ---------------------------------------------------------------------------
+# Atomic write
+# ---------------------------------------------------------------------------
+
+output = Path.home() / ".config/kitty/shunya-theme.conf"
+output.parent.mkdir(parents=True, exist_ok=True)
+
+tmp = output.with_suffix(".conf.tmp")
+tmp.write_text("\n".join(lines))
+os.replace(tmp, output)
+PY

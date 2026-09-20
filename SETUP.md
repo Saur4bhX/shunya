@@ -1,4 +1,4 @@
-# SHUNYA Setup Guide
+# SHUNYA Setup
 
 This repository reproduces the SHUNYA Arch Linux + Hyprland environment.
 
@@ -8,26 +8,36 @@ Install Arch Linux and ensure networking and Git are available.
 
 Clone this repository:
 
-    git clone <SHUNYA-REPOSITORY-URL> ~/shunya
-    cd ~/shunya
+```
+git clone <SHUNYA-REPOSITORY-URL> ~/shunya
+cd ~/shunya
+```
 
 ## 2. Packages
 
 Official Arch packages are recorded in:
 
-    packages/pacman-explicit.txt
+```
+packages/pacman-explicit.txt
+```
 
 Install them with:
 
-    sudo pacman -S --needed - < packages/pacman-explicit.txt
+```
+sudo pacman -S --needed - < packages/pacman-explicit.txt
+```
 
 AUR packages are recorded in:
 
-    packages/aur-explicit.txt
+```
+packages/aur-explicit.txt
+```
 
 After installing paru:
 
-    paru -S --needed - < packages/aur-explicit.txt
+```
+paru -S --needed - < packages/aur-explicit.txt
+```
 
 Debug split packages are intentionally excluded from the AUR manifest.
 
@@ -35,113 +45,348 @@ Debug split packages are intentionally excluded from the AUR manifest.
 
 The Hyprland configuration is stored in:
 
-    config/hypr/
+```
+config/hypr/
+```
 
 Restore it with:
 
-    mkdir -p ~/.config/hypr
-    cp -a config/hypr/. ~/.config/hypr/
+```
+mkdir -p ~/.config/hypr
+cp -a config/hypr/. ~/.config/hypr/
+```
 
 SHUNYA uses Lua-based Hyprland configuration rather than a conventional
 hyprland.conf-only setup.
+
+Hyprland appearance policy is kept in the tracked Lua configuration,
+while dynamic SHUNYA theme colours are applied by `shunya-theme`.
+
+The focused window border uses the current SHUNYA accent colour.
+
+The unfocused window border uses the current SHUNYA semantic border
+colour.
+
+Because SHUNYA uses Hyprland's Lua configuration system, runtime theme
+updates are applied through:
+
+```
+hyprctl eval
+```
+
+using:
+
+```
+hl.config(...)
+```
+
+rather than the legacy `hyprctl keyword` interface.
+
+The current theme state is reapplied automatically when Hyprland starts.
 
 ## 4. Custom Scripts
 
 Scripts are stored in:
 
-    config/bin/
+```
+config/bin/
+```
 
 Restore them with:
 
-    mkdir -p ~/.config/bin
-    cp -a config/bin/. ~/.config/bin/
-    chmod +x ~/.config/bin/*
+```
+mkdir -p ~/.config/bin
+cp -a config/bin/. ~/.config/bin/
+chmod +x ~/.config/bin/*
+```
 
 Ensure ~/.config/bin is in PATH.
 
 ## 5. Theme System
 
-SHUNYA uses a unified light/dark theme across Quickshell, Hyprlock, GTK and Qt6/Kvantum.
+SHUNYA provides unified light/dark theming across Hyprland, Quickshell,
+Hyprlock, GTK3/GTK4, Qt5/Qt6 with Kvantum, Dolphin and Kitty.
 
 Theme state is stored in:
 
-    ~/.config/shunya/theme.json
+```
+~/.config/shunya/theme.json
+```
+
+This file is the central source of truth for SHUNYA theme state.
 
 Theme switching is handled by:
 
-    ~/.config/bin/shunya-theme
+```
+~/.config/bin/shunya-theme
+```
 
 Usage:
 
-    shunya-theme dark
-    shunya-theme light
-    shunya-theme toggle
+```
+shunya-theme dark
+shunya-theme light
+shunya-theme toggle
+shunya-theme apply
+```
 
 Accent control:
 
-    shunya-theme auto-accent
-    shunya-theme freeze-accent
-    shunya-theme set-accent '#RRGGBB'
+```
+shunya-theme auto-accent
+shunya-theme freeze-accent
+shunya-theme set-accent '#RRGGBB'
+```
 
-`auto-accent` derives dark and light accents from the configured wallpaper using Matugen.
+`apply` regenerates and reapplies the current theme without changing the
+selected mode or accent mode.
 
-`freeze-accent` keeps the currently generated accents and disables automatic regeneration.
+It is used during installation and Hyprland startup so the existing
+theme state is restored rather than forcing dark or light mode.
 
-`set-accent` uses the supplied colour as a source colour and lets Matugen derive suitable dark/light accent and on-accent colours.
+`auto-accent` derives dark and light accents from the configured
+wallpaper using Matugen.
 
-Theme accent state is stored in `theme.json` using `accentMode`. Fixed custom colours also use `accentSource`.
+`freeze-accent` keeps the currently generated accents and disables
+automatic regeneration.
 
-Tracked Kvantum themes:
+`set-accent` uses the supplied colour as a source colour and lets
+Matugen derive suitable dark/light accent and on-accent colours.
 
-    config/Kvantum/SHUNYA/
-    config/Kvantum/SHUNYA-Light/
+Theme accent state is stored in `theme.json` using `accentMode`.
+
+Fixed custom colours also use `accentSource`.
+
+When `accentMode` is `auto`, `shunya-theme` regenerates dark and light
+accent colours from the configured wallpaper using Matugen.
+
+`sourceColorIndex` selects the wallpaper colour candidate used as the
+source.
+
+SHUNYA uses wallpaper-derived colour adaptively rather than allowing
+the generated Material palette to control the entire interface.
+
+The accent is primarily used for semantic states such as:
+
+* focus
+* selection
+* cursor
+* progress
+* active controls
+* active borders
+
+The current visual direction is Catppuccin-inspired in clarity,
+contrast and palette restraint, while retaining SHUNYA's own palette
+and design language.
+
+### Hyprlock
+
+Hyprlock configuration is generated by `shunya-theme`.
+
+Its semantic colour mapping includes:
+
+* background → SHUNYA background
+* text and clock → SHUNYA text
+* password field surface → SHUNYA surface
+* password field border → SHUNYA accent
+* password text → SHUNYA text
+
+### GTK
 
 GTK3 and GTK4 follow the selected SHUNYA mode.
 
-Qt6 uses qt6ct with Kvantum. Qt5 support is intentionally not installed unless a Qt5 application requires it.
+Generated configuration includes:
 
-The current visual style is Catppuccin-inspired but uses SHUNYA's own palette and design language.
+```
+~/.config/gtk-3.0/settings.ini
+~/.config/gtk-3.0/gtk.css
+~/.config/gtk-4.0/settings.ini
+~/.config/gtk-4.0/gtk.css
+```
 
-When accentMode is auto, shunya-theme regenerates dark and light accent colours from the configured wallpaper using Matugen. sourceColorIndex selects the wallpaper colour candidate.
+SHUNYA propagates semantic colours to GTK selections, sliders,
+progress bars, menus, tabs and other active states.
+
+### Qt and Kvantum
+
+SHUNYA supports both Qt5 and Qt6 applications.
+
+Qt5 uses:
+
+```
+qt5ct
+kvantum-qt5
+qt5-wayland
+```
+
+Qt6 uses:
+
+```
+qt6ct
+kvantum
+```
+
+Generated palette files are stored under:
+
+```
+~/.config/qt5ct/colors/
+~/.config/qt6ct/colors/
+```
+
+Tracked Kvantum themes are stored in:
+
+```
+config/Kvantum/SHUNYA/
+config/Kvantum/SHUNYA-Light/
+```
+
+The tracked Kvantum SVG files are immutable templates.
+
+`shunya-theme` generates the live Kvantum SVG files from those templates
+and replaces the theme's legacy accent family with the current SHUNYA
+accent.
+
+Dark mode activates:
+
+```
+SHUNYA
+```
+
+Light mode activates:
+
+```
+SHUNYA-Light
+```
+
+Dark mode uses Breeze Dark icons.
+
+Light mode uses Breeze icons.
+
+### Dolphin
+
+Dolphin also uses a KDE Frameworks application colour-scheme layer.
+
+SHUNYA therefore applies an application-specific Dolphin colour scheme
+in addition to Qt and Kvantum theming.
+
+Dark mode uses:
+
+```
+KvDark
+```
+
+Light mode uses:
+
+```
+KvFlatLight
+```
+
+This is intentional and should not be removed merely because Qt palette
+generation is working.
+
+### Kitty
+
+Kitty's persistent configuration is stored in:
+
+```
+config/kitty/kitty.conf
+```
+
+and restored to:
+
+```
+~/.config/kitty/kitty.conf
+```
+
+The generated SHUNYA Kitty palette is stored in:
+
+```
+~/.config/kitty/shunya-theme.conf
+```
+
+`kitty.conf` includes this generated file rather than duplicating theme
+colours in the tracked configuration.
+
+The Kitty theme uses:
+
+* SHUNYA dark/light terminal surfaces
+* wallpaper-derived accent for selection
+* wallpaper-derived accent for the cursor
+* wallpaper-derived accent for links
+* wallpaper-derived accent for active tabs and borders
+* semantic inactive borders and surfaces
+* a vivid ANSI terminal palette
+
+ANSI colours retain their terminal meaning.
+
+Red, green, yellow, blue, magenta and cyan are therefore not replaced
+wholesale by the wallpaper accent.
+
+Light mode uses subtle wallpaper tinting for its background, surfaces
+and terminal palette while retaining strong contrast and crisp text.
+
+Kitty launches Fish directly with:
+
+```
+shell /usr/bin/fish
+```
+
+This affects Kitty only and does not change the user's system login
+shell.
 
 ## 6. Fish
 
 Fish configuration is stored in:
 
-    config/fish/config.fish
+```
+config/fish/config.fish
+```
 
 Restore with:
 
-    mkdir -p ~/.config/fish
-    cp config/fish/config.fish ~/.config/fish/config.fish
+```
+mkdir -p ~/.config/fish
+cp config/fish/config.fish ~/.config/fish/config.fish
+```
+
+Fish is used interactively.
+
+SHUNYA utility scripts such as `shunya-theme` remain Bash scripts.
 
 ## 7. Phone Integration
 
 SHUNYA uses:
 
-- KDE Connect
-- scrcpy
-- Android Debug Bridge
-- SSH/SFTP
-- Motorola Edge 60 Pro integration
+* KDE Connect
+* scrcpy
+* Android Debug Bridge
+* SSH/SFTP
+* Motorola Edge 60 Pro integration
 
 The launcher is:
 
-    ~/.config/bin/phone
+```
+~/.config/bin/phone
+```
 
 ### Office Wi-Fi and Motorola Hotspot
 
 Both networks use classic ADB TCP on port 5555.
+
 Android Wireless Debugging and mDNS are not used.
 
 After a phone reboot or ADB reset, connect an authorized USB
 cable and initialize TCP mode:
 
-    /usr/bin/adb -d tcpip 5555
+```
+/usr/bin/adb -d tcpip 5555
+```
 
 Disconnect USB, then run:
 
-    phone
+```
+phone
+```
 
 The current launcher tries office IP 192.168.1.39 first,
 then the laptop's default gateway for Motorola hotspot access.
@@ -152,7 +397,9 @@ Automatic detection of changed office DHCP addresses is pending.
 
 The working SHUNYA configuration uses:
 
-    scrcpy --audio-source=playback --audio-dup
+```
+scrcpy --audio-source=playback --audio-dup
+```
 
 ## 8. KDE Connect
 
@@ -162,8 +409,9 @@ Pair the phone and computer while they are reachable on the same
 network.
 
 Pairing information and private device identity are NOT stored in this
-Git repository. Pairing must therefore be performed once on a fresh
-installation.
+Git repository.
+
+Pairing must therefore be performed once on a fresh installation.
 
 ## 9. SFTP
 
@@ -171,7 +419,9 @@ OpenSSH is used on the laptop.
 
 Enable the SSH server:
 
-    sudo systemctl enable --now sshd
+```
+sudo systemctl enable --now sshd
+```
 
 The Android file manager can connect to the laptop using SFTP.
 
@@ -182,18 +432,21 @@ committed to this repository.
 
 Enable Bluetooth:
 
-    sudo systemctl enable --now bluetooth
+```
+sudo systemctl enable --now bluetooth
+```
 
-Device pairing is intentionally not reproduced through Git. Pair
-Bluetooth devices again on a fresh installation.
+Device pairing is intentionally not reproduced through Git.
+
+Pair Bluetooth devices again on a fresh installation.
 
 ## 11. File Manager and Browser
 
 SHUNYA uses:
 
-- Dolphin as the file manager
-- Brave as the primary cross-device browser
-- qutebrowser as the keyboard-first browser
+* Dolphin as the file manager
+* Brave as the primary cross-device browser
+* qutebrowser as the keyboard-first browser
 
 Application profiles, browser data, login credentials and other private
 state are not stored in Git.
@@ -202,42 +455,52 @@ state are not stored in Git.
 
 Do not commit:
 
-- passwords
-- SSH private keys
-- ADB private keys
-- Syncthing certificates/private keys
-- browser profiles
-- phone.env
-- temporary files
-- machine-specific secrets
+* passwords
+* SSH private keys
+* ADB private keys
+* Syncthing certificates/private keys
+* browser profiles
+* phone.env
+* temporary files
+* machine-specific secrets
 
 These are excluded intentionally and must be recreated or paired on a
 new machine.
 
-## 13. Volume and brightness OSD
+## 13. Volume and Brightness OSD
 
 The shunya-bar Quickshell process provides both popups.
 
-- Volume and mute changes are detected through PipeWire.
-- Brightness keys run ~/.config/bin/brightness, which updates
-  intel_backlight through brightnessctl and signals Quickshell.
-- Popups close automatically after 1.5 seconds.
-- On different hardware, update the backlight device in the
-  brightness script using the output of brightnessctl -l.
+* Volume and mute changes are detected through PipeWire.
+* Brightness keys run `~/.config/bin/brightness`, which updates
+  `intel_backlight` through `brightnessctl` and signals Quickshell.
+* Popups close automatically after 1.5 seconds.
+* On different hardware, update the backlight device in the brightness
+  script using the output of `brightnessctl -l`.
 
 ## 14. Verification
 
 After restoring SHUNYA, verify:
 
-    git status
-    adb devices
-    kdeconnect-cli -l
-    systemctl status bluetooth
-    systemctl status sshd
+```
+git status
+adb devices
+kdeconnect-cli -l
+systemctl status bluetooth
+systemctl status sshd
+```
+
+Reapply and verify the current SHUNYA theme:
+
+```
+shunya-theme apply
+```
 
 Test the phone integration with:
 
-    phone
+```
+phone
+```
 
 The goal is that everything reproducible is restored from Git while
 credentials, cryptographic identities and device-specific secrets remain
