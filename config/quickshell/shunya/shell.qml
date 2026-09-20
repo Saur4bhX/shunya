@@ -82,6 +82,44 @@ RowLayout {
         Layout.fillWidth: true
     }
 Text {
+    text: "Accent"
+    color: root.palette.muted
+    font.family: root.themeData.fontFamily
+    font.pointSize: root.themeData.fontSize
+}
+
+Button {
+    text: root.themeData.accentMode === "auto" ? "Freeze" : "Auto"
+
+    contentItem: Text {
+        text: parent.text
+        color: root.palette.text
+        font.family: root.themeData.fontFamily
+        font.pointSize: root.themeData.fontSize
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+    }
+
+    background: Rectangle {
+        implicitWidth: 64
+        implicitHeight: 30
+        radius: 6
+        color: root.palette.surface
+        border.width: 1
+        border.color: root.palette.border
+    }
+
+    onClicked: Quickshell.execDetached({
+        command: [
+            Quickshell.env("HOME") + "/.config/bin/shunya-theme",
+            root.themeData.accentMode === "auto"
+                ? "freeze-accent"
+                : "auto-accent"
+        ]
+    })
+}
+
+Text {
     text: "Theme"
     color: root.palette.muted
     font.family: root.themeData.fontFamily
