@@ -33,8 +33,9 @@ def update_auto_accent(data):
         return
 
     wallpaper = data.get("wallpaper")
-    if not wallpaper:
-        return
+    if not wallpaper or not Path(wallpaper).is_file():
+       return
+
 
     source_index = str(data.get("sourceColorIndex", 0))
 
