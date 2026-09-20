@@ -1,10 +1,12 @@
 adobe-source-code-pro-fonts
 adobe-source-sans-fonts
+android-sdk-platform-tools
 android-tools
 base
 base-devel
 bluez
 bluez-utils
+brave-bin
 brightnessctl
 dnsmasq
 dolphin
@@ -19,6 +21,7 @@ grim
 grub
 gvfs
 hypridle
+hypr-kdeconnect-fix-git
 hyprland
 hyprlock
 intel-ucode
@@ -26,6 +29,7 @@ kdeconnect
 keepass
 kitty
 kvantum
+kvantum-qt5
 less
 libnotify
 libreoffice-still
@@ -36,9 +40,12 @@ networkmanager
 ntfs-3g
 openssh
 os-prober
+paru
+paru-debug
 pavucontrol
 pipewire-pulse
 polkit-kde-agent
+qt5ct
 qt6ct
 quickshell
 qutebrowser
@@ -46,6 +53,7 @@ rsync
 scrcpy
 slurp
 sshfs
+strace
 sudo
 syncthing
 tree
