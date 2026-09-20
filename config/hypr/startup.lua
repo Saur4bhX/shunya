@@ -3,6 +3,7 @@ hl.on("hyprland.start", function()
 
     hl.exec_cmd("kdeconnect-indicator")
     hl.exec_cmd("hypridle")
+    hl.exec_cmd("hyprpaper")
     hl.exec_cmd("quickshell -c shunya-bar")
     hl.exec_cmd("quickshell -c shunya-notifications")
     hl.exec_cmd("/usr/lib/polkit-kde-authentication-agent-1")

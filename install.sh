@@ -208,6 +208,7 @@ required_commands=(
     "qutebrowser"
     "dolphin"
     "quickshell"
+    "hyprpaper"
     "hyprlock"
     "hypridle"
     "scrcpy"

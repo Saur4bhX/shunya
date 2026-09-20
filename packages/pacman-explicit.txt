@@ -24,6 +24,7 @@ hypridle
 hypr-kdeconnect-fix-git
 hyprland
 hyprlock
+hyprpaper
 intel-ucode
 kdeconnect
 keepass
