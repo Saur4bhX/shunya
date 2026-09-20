@@ -231,6 +231,44 @@ for mode, path in themes.items():
         )
 
     path.write_text(text)
+
+# Propagate SHUNYA accent into Kvantum SVG assets.
+svg_themes = {
+    "dark": Path.home() / ".config/Kvantum/SHUNYA/SHUNYA.svg",
+    "light": Path.home() / ".config/Kvantum/SHUNYA-Light/SHUNYA-Light.svg",
+}
+
+template_paths = {
+    "dark": Path.home() / "shunya/config/Kvantum/SHUNYA/SHUNYA.svg",
+    "light": Path.home() / "shunya/config/Kvantum/SHUNYA-Light/SHUNYA-Light.svg",
+}
+
+for theme_mode, svg_path in svg_themes.items():
+    template_path = template_paths[theme_mode]
+    if not template_path.exists():
+        continue
+    accent = data[theme_mode]["accent"]
+
+    svg = template_path.read_text()
+
+    legacy_accents = (
+        r"#5294e2|"
+        r"#0582ff|"
+        r"#0078f0|"
+        r"#3176bf|"
+        r"#4693e6|"
+        r"#58acff"
+    )
+
+    svg = re.sub(
+        legacy_accents,
+        accent,
+        svg,
+        flags=re.IGNORECASE,
+    )
+
+    svg_path.parent.mkdir(parents=True, exist_ok=True)
+    svg_path.write_text(svg)
 PY
 
 if [[ "$mode" == "dark" ]]; then
