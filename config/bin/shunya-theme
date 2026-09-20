@@ -269,6 +269,47 @@ css = f"""@define-color theme_bg_color {palette["background"]};
 @define-color theme_selected_bg_color {palette["accent"]};
 @define-color theme_selected_fg_color {palette["onAccent"]};
 @define-color borders {palette["border"]};
+@define-color accent_color {palette["accent"]};
+@define-color accent_bg_color {palette["accent"]};
+@define-color accent_fg_color {palette["onAccent"]};
+
+selection,
+row:selected,
+listview row:selected,
+columnview row:selected,
+gridview child:selected {{
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+}}
+
+scale highlight,
+scale fill,
+progressbar progress {{
+    background-color: @accent_bg_color;
+    border-color: @accent_bg_color;
+}}
+
+scale slider {{
+    border-color: @accent_bg_color;
+}}
+
+popover row:selected,
+popover listview row:selected,
+popover modelbutton:hover,
+popover modelbutton:focus,
+menuitem:hover,
+menuitem:focus {{
+    background-color: @accent_bg_color;
+    color: @accent_fg_color;
+}}
+
+notebook > header > tabs > tab:checked {{
+    box-shadow: inset 0 -3px @accent_bg_color;
+}}
+
+notebook > header > tabs > tab:checked label {{
+    color: @accent_color;
+}}
 
 window,
 .background {{
