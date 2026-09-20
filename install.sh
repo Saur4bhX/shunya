@@ -71,6 +71,7 @@ for relative_path in \
     quickshell/shunya-bar/Tray.qml \
     quickshell/shunya-power/shell.qml \
     qt6ct/qt6ct.conf \
+    qt5ct/qt5ct.conf
     shunya/theme.json \
     xdg-desktop-portal/portals.conf
 do
