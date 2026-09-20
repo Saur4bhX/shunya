@@ -254,6 +254,35 @@ done
 gsettings set org.gnome.desktop.interface color-scheme "$color_scheme"
 gsettings set org.gnome.desktop.interface font-name 'Noto Sans 11'
 
+python3 - "$THEME_FILE" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+data = json.load(open(sys.argv[1]))
+palette = data[data["mode"]]
+
+css = f"""@define-color theme_bg_color {palette["background"]};
+@define-color theme_fg_color {palette["text"]};
+@define-color theme_base_color {palette["surface"]};
+@define-color theme_text_color {palette["text"]};
+@define-color theme_selected_bg_color {palette["accent"]};
+@define-color theme_selected_fg_color {palette["onAccent"]};
+@define-color borders {palette["border"]};
+
+window,
+.background {{
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}}
+"""
+
+for version in ("gtk-3.0", "gtk-4.0"):
+    path = Path.home() / ".config" / version / "gtk.css"
+    path.write_text(css)
+PY
+
+
 if [[ "$mode" == "dark" ]]; then
     kvantummanager --set SHUNYA >/dev/null
 else
