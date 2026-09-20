@@ -5,8 +5,32 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
 
+import Quickshell.Io
+
 ShellRoot {
-    BrightnessOsd {}
+    id: shellRoot
+
+    readonly property var themeData: {
+        try {
+            return JSON.parse(themeFile.text());
+        } catch (error) {
+            return {};
+        }
+    }
+
+    readonly property var palette:
+        themeData[themeData.mode || "dark"] || {}
+
+    FileView {
+        id: themeFile
+        path: Quickshell.env("HOME") + "/.config/shunya/theme.json"
+        blockLoading: true
+        watchChanges: true
+        onFileChanged: reload()
+}
+
+
+    BrightnessOsd { themeData: shellRoot.themeData }
 
     SystemClock {
         id: clock
@@ -21,8 +45,8 @@ ShellRoot {
             required property var modelData
 
             screen: modelData
-            implicitHeight: 36
-            color: "#171a20"
+	    implicitHeight: 36
+	    color: shellRoot.palette.background || "#171a20"
 
             anchors {
                 top: true
@@ -56,15 +80,17 @@ ShellRoot {
 
                         width: 28
                         height: 26
-                        radius: 4
-                        color: selected ? "#34435b" : "transparent"
+			radius: 4
+			color: selected ? shellRoot.palette.accent : "transparent"
 
                         Text {
                             anchors.centerIn: parent
                             text: workspace.number
-                            color: workspace.selected ? "#edf1f7" : "#8993a3"
-                            font.family: "Source Code Pro"
-                            font.pixelSize: 13
+			    color: workspace.selected
+			        ? shellRoot.palette.onAccent
+				: shellRoot.palette.muted
+			    font.family: shellRoot.themeData.fontFamily || "Noto Sans"
+			    font.pointSize: shellRoot.themeData.fontSize || 11
                         }
 
                         MouseArea {
@@ -82,10 +108,10 @@ ShellRoot {
             Text {
                 anchors.centerIn: parent
                 text: Qt.formatDateTime(clock.date, "ddd, dd MMM  HH:mm")
-                color: "#edf1f7"
-                font.family: "Source Code Pro"
-                font.pixelSize: 13
-            }
+		color: shellRoot.palette.text
+		font.family: shellRoot.themeData.fontFamily || "Noto Sans"
+		font.pointSize: shellRoot.themeData.fontSize || 11
+	}
             Row {
                 anchors.right: parent.right
                 anchors.rightMargin: 12
@@ -93,10 +119,10 @@ ShellRoot {
                 spacing: 18
 
 		Tray { barWindow: bar }
-                Volume {}
-                NetworkStatus {}
-                Battery {}
-            }
+		Volume { themeData: shellRoot.themeData }
+		NetworkStatus { themeData: shellRoot.themeData }
+		Battery { themeData: shellRoot.themeData }
+	    }
         }
     }
 }

@@ -1,3 +1,5 @@
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+
 hl.config({
     general = {
         gaps_in = 5,

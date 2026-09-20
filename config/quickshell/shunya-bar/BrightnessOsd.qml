@@ -5,12 +5,15 @@ import Quickshell.Wayland
 
 PanelWindow {
     id: root
+    required property var themeData
+    readonly property var palette:
+        themeData[themeData.mode || "dark"] || {}
     property int percent: 0
 
     visible: hideTimer.running
     implicitWidth: 260
     implicitHeight: 70
-    color: "#171a20"
+    color: root.palette.background
     anchors.top: true
     margins.top: 52
     exclusionMode: ExclusionMode.Ignore
@@ -40,22 +43,22 @@ PanelWindow {
 
         Text {
             text: "Brightness " + root.percent + "%"
-            color: "#edf1f7"
-            font.family: "Source Code Pro"
-            font.pixelSize: 14
+            color: root.palette.text
+            font.family: root.themeData.fontFamily
+            font.pointSize: root.themeData.fontSize
         }
 
         Rectangle {
             width: 220
             height: 6
             radius: 3
-            color: "#34435b"
+            color: root.palette.border
 
             Rectangle {
                 width: parent.width * root.percent / 100
                 height: parent.height
                 radius: 3
-                color: "#edf1f7"
+		color: root.palette.accent
             }
         }
     }

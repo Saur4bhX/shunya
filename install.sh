@@ -71,6 +71,8 @@ for relative_path in \
     quickshell/shunya-notifications/shell.qml \
     quickshell/shunya-bar/Tray.qml \
     quickshell/shunya-power/shell.qml \
+    qt6ct/qt6ct.conf \
+    shunya/theme.json \
     xdg-desktop-portal/portals.conf
 do
     source_file="$REPO/config/$relative_path"

@@ -1,9 +1,31 @@
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
 
 ShellRoot {
+    id: root
+
+    readonly property var themeData: {
+        try {
+            return JSON.parse(themeFile.text());
+        } catch (error) {
+            return {};
+        }
+    }
+
+    readonly property var palette:
+        themeData[themeData.mode || "dark"] || {}
+
+    FileView {
+        id: themeFile
+        path: Quickshell.env("HOME") + "/.config/shunya/theme.json"
+        blockLoading: true
+        watchChanges: true
+        onFileChanged: reload()
+    }
+
     NotificationServer {
         id: server
 
@@ -63,8 +85,8 @@ ShellRoot {
                         width: cards.width
                         height: content.height + 24
                         radius: 8
-                        color: "#232833"
-                        border.color: "#536b8e"
+                        color: root.palette.surface
+                        border.color: root.palette.accent
 
                         Column {
                             id: content
@@ -77,9 +99,9 @@ ShellRoot {
                                 width: parent.width
                                 text: card.modelData.appName
                                 textFormat: Text.PlainText
-                                color: "#a6b5cc"
-                                font.family: "Source Code Pro"
-                                font.pixelSize: 12
+                                color: root.palette.accent
+                                font.family: root.themeData.fontFamily
+                                font.pointSize: root.themeData.fontSize
                                 elide: Text.ElideRight
                             }
 
@@ -87,8 +109,9 @@ ShellRoot {
                                 width: parent.width
                                 text: card.modelData.summary
                                 textFormat: Text.PlainText
-                                color: "#edf1f7"
-                                font.pixelSize: 15
+                                color: root.palette.text
+                                font.family: root.themeData.fontFamily
+                                font.pointSize: root.themeData.fontSize
                                 font.bold: true
                                 wrapMode: Text.Wrap
                             }
@@ -98,8 +121,9 @@ ShellRoot {
                                 text: card.modelData.body
                                 textFormat: Text.PlainText
                                 visible: text.length > 0
-                                color: "#c5ccd8"
-                                font.pixelSize: 13
+                                color: root.palette.muted
+                                font.family: root.themeData.fontFamily
+                                font.pointSize: root.themeData.fontSize
                                 wrapMode: Text.Wrap
                             }
                         }

@@ -2,15 +2,35 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 
 PanelWindow {
     id: root
 
+    readonly property var themeData: {
+        try {
+            return JSON.parse(themeFile.text());
+        } catch (error) {
+            return {};
+        }
+    }
+
+    readonly property var palette:
+        themeData[themeData.mode || "dark"] || {}
+
+    FileView {
+        id: themeFile
+        path: Quickshell.env("HOME") + "/.config/shunya/theme.json"
+        blockLoading: true
+        watchChanges: true
+        onFileChanged: reload()
+    }
+
     visible: true
     implicitWidth: 600
     implicitHeight: 440
-    color: "#171a20"
+    color: root.palette.background
     exclusionMode: ExclusionMode.Ignore
 
     WlrLayershell.namespace: "shunya-launcher"
@@ -50,9 +70,9 @@ PanelWindow {
 
         Text {
             text: "SHUNYA"
-            color: "#a6b5cc"
-            font.family: "Source Code Pro"
-            font.pixelSize: 14
+            color: root.palette.accent
+            font.family: root.themeData.fontFamily
+            font.pointSize: root.themeData.fontSize
             font.letterSpacing: 3
         }
 
@@ -61,17 +81,18 @@ PanelWindow {
 
             Layout.fillWidth: true
             placeholderText: "Search applications..."
-            placeholderTextColor: "#8993a3"
-            color: "#edf1f7"
-            font.pixelSize: 18
+            placeholderTextColor: root.palette.muted
+            color: root.palette.text
+            font.family: root.themeData.fontFamily
+            font.pointSize: root.themeData.fontSize
             focus: true
             selectByMouse: true
 
             background: Rectangle {
                 implicitHeight: 48
-                color: "#232833"
+                color: root.palette.surface
                 radius: 8
-                border.color: "#536b8e"
+                border.color: root.palette.accent
             }
 
             Component.onCompleted: forceActiveFocus()
@@ -79,15 +100,23 @@ PanelWindow {
             onAccepted: root.launch(results.currentIndex)
 
             Keys.onEscapePressed: Qt.quit()
+
             Keys.onDownPressed: {
-                if (results.count > 0)
-                    results.currentIndex =
-                        Math.min(results.currentIndex + 1, results.count - 1);
+                if (results.count > 0) {
+                    results.currentIndex = Math.min(
+                        results.currentIndex + 1,
+                        results.count - 1
+                    );
+                }
             }
+
             Keys.onUpPressed: {
-                if (results.count > 0)
-                    results.currentIndex =
-                        Math.max(results.currentIndex - 1, 0);
+                if (results.count > 0) {
+                    results.currentIndex = Math.max(
+                        results.currentIndex - 1,
+                        0
+                    );
+                }
             }
         }
 
@@ -107,11 +136,14 @@ PanelWindow {
 
                 required property var modelData
                 required property int index
+                readonly property bool selected: ListView.isCurrentItem
 
                 width: ListView.view.width
                 height: 44
                 radius: 6
-                color: ListView.isCurrentItem ? "#34435b" : "transparent"
+                color: row.selected
+                    ? root.palette.accent
+                    : "transparent"
 
                 Text {
                     anchors.fill: parent
@@ -119,8 +151,11 @@ PanelWindow {
                     anchors.rightMargin: 12
                     verticalAlignment: Text.AlignVCenter
                     text: row.modelData.name
-                    color: "#edf1f7"
-                    font.pixelSize: 16
+                    color: row.selected
+                        ? root.palette.onAccent
+                        : root.palette.text
+                    font.family: root.themeData.fontFamily
+                    font.pointSize: root.themeData.fontSize
                     elide: Text.ElideRight
                 }
 
@@ -134,14 +169,17 @@ PanelWindow {
                 anchors.centerIn: parent
                 visible: results.count === 0
                 text: "No matching applications"
-                color: "#8993a3"
+                color: root.palette.muted
+                font.family: root.themeData.fontFamily
+                font.pointSize: root.themeData.fontSize
             }
         }
 
         Text {
             text: "↑ ↓ select    Enter launch    Esc close"
-            color: "#8993a3"
-            font.pixelSize: 12
+            color: root.palette.muted
+            font.family: root.themeData.fontFamily
+            font.pointSize: root.themeData.fontSize
         }
     }
 }

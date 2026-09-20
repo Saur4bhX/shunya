@@ -2,8 +2,11 @@ import QtQuick
 import Quickshell.Services.UPower
 
 Text {
-    readonly property var battery: UPower.displayDevice
+    id: root
 
+    readonly property var battery: UPower.displayDevice
+    required property var themeData
+    readonly property var palette: themeData[themeData.mode || "dark"] || {}
     text: {
         if (!battery.ready)
             return "BAT --";
@@ -34,9 +37,9 @@ Text {
         return "BAT " + percent + "% " + status;
     }
 
-    color: "#edf1f7"
-    font.family: "Source Code Pro"
-    font.pixelSize: 13
+    color: root.palette.text
+    font.family: root.themeData.fontFamily
+    font.pointSize: root.themeData.fontSize
     height: 36
     verticalAlignment: Text.AlignVCenter
 }

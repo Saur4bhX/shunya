@@ -1,0 +1,25 @@
+{
+  "mode": "dark",
+  "accentMode": "auto",
+  "wallpaper": "/home/saurabh/Pictures/Wallpapers/786137.jpg",
+  "fontFamily": "Noto Sans",
+  "fontSize": 11,
+  "dark": {
+    "background": "#1e1e26",
+    "surface": "#282832",
+    "text": "#e6e3ed",
+    "muted": "#b0acbe",
+    "border": "#45434f",
+    "accent": "#ffb2be",
+    "onAccent": "#561d2a"
+  },
+  "light": {
+    "background": "#f3f0ed",
+    "surface": "#faf8f5",
+    "text": "#302e38",
+    "muted": "#64606f",
+    "border": "#cbc5d0",
+    "accent": "#8e4957",
+    "onAccent": "#ffffff"
+  }
+}
