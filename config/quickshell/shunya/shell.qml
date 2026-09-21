@@ -90,8 +90,8 @@ PanelWindow {
         sortField: FolderListModel.Name
     }
     visible: true
-    implicitWidth: 600
-    implicitHeight: 440
+    implicitWidth: 640
+    implicitHeight: 470
     color: root.palette.background
     exclusionMode: ExclusionMode.Ignore
 
@@ -363,14 +363,14 @@ PanelWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            spacing: 10
+            spacing: 12
 
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
 
                 Text {
-                    text: "Wallpaper"
+                    text: "Wallpapers"
                     color: root.palette.text
                     font.family: root.themeData.fontFamily
                     font.pointSize: root.themeData.fontSize
@@ -467,9 +467,8 @@ PanelWindow {
 
                 model: wallpaperModel
 
-                cellWidth: 176
-                cellHeight: 112
-
+                cellWidth: 190
+                cellHeight: 122
                 delegate: Rectangle {
                     id: wallpaperTile
 
@@ -480,50 +479,97 @@ PanelWindow {
 
                     readonly property bool current:
                     filePath === root.themeData.wallpaper
+
                     readonly property bool selected:
                     GridView.isCurrentItem
 
-                    width: 168
-                    height: 102
-                    radius: 8
+                    readonly property bool hovered:
+                    tileMouse.containsMouse
+
+                    width: 182
+                    height: 112
+
+                    radius: 9
+                    clip: true
 
                     color: root.palette.surface
-                    border.width: current ? 3 : selected ? 2 : 1
 
-                    border.color: current
+                    border.width:
+                    current ? 3 :
+                    selected ? 2 :
+                    1
+
+                    border.color:
+                    current
                     ? root.palette.accent
                     : selected
                     ? root.palette.text
+                    : hovered
+                    ? root.palette.accent
                     : root.palette.border
-
-                    clip: true
 
                     Image {
                         anchors.fill: parent
                         anchors.margins: wallpaperTile.current ? 3 : 1
 
                         source: wallpaperTile.fileUrl
-
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
 
-                        sourceSize.width: 336
-                        sourceSize.height: 200
+                        sourceSize.width: 364
+                        sourceSize.height: 224
+
+                        opacity: wallpaperTile.hovered ? 0.92 : 1.0
                     }
 
+                    // Subtle hover wash
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: wallpaperTile.current ? 3 : 1
+
+                        radius: 6
+                        color: root.palette.accent
+                        opacity: wallpaperTile.hovered ? 0.08 : 0
+                    }
+
+                    // Current wallpaper badge
+                    Rectangle {
+                        visible: wallpaperTile.current
+
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.margins: 8
+
+                        width: 24
+                        height: 24
+                        radius: 12
+
+                        color: root.palette.accent
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "✓"
+
+                            color: root.palette.onAccent
+                            font.bold: true
+                            font.pixelSize: 14
+                        }
+                    }
+
+                    // Filename strip
                     Rectangle {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
 
-                        height: 24
+                        height: 26
 
                         color: "#99000000"
 
                         Text {
                             anchors.fill: parent
-                            anchors.leftMargin: 7
-                            anchors.rightMargin: 7
+                            anchors.leftMargin: 8
+                            anchors.rightMargin: 8
 
                             verticalAlignment: Text.AlignVCenter
 
@@ -536,8 +582,12 @@ PanelWindow {
                             elide: Text.ElideMiddle
                         }
                     }
+
                     MouseArea {
+                        id: tileMouse
+
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
 
                         onClicked: {
@@ -545,7 +595,6 @@ PanelWindow {
                             root.setWallpaper(wallpaperTile.filePath);
                         }
                     }
-
                 }
                 Keys.onReturnPressed: {
                     if (currentIndex >= 0) {
