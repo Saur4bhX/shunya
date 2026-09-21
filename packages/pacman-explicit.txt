@@ -65,3 +65,4 @@ xdg-desktop-portal-hyprland
 xdg-user-dirs
 fastfetch
 starship
+ttf-nerd-fonts-symbols-mono
