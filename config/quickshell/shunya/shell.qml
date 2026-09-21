@@ -33,6 +33,22 @@ PanelWindow {
         });
     }
 
+    function focusCurrentWallpaper() {
+        if (!root.themeData.wallpaper || wallpaperModel.count === 0)
+        return;
+
+        const url = "file://" + root.themeData.wallpaper;
+        const index = wallpaperModel.indexOf(url);
+
+        if (index >= 0) {
+            wallpaperGrid.currentIndex = index;
+            wallpaperGrid.positionViewAtIndex(
+                index,
+                GridView.Contain
+            );
+        }
+    }
+
     readonly property var themeData: {
         try {
             return JSON.parse(themeFile.text());
@@ -133,7 +149,10 @@ PanelWindow {
 
                 contentItem: Text {
                     text: parent.text
-                    color: root.palette.text
+                    color: root.wallpaperMode
+                    ? root.palette.onAccent
+                    : root.palette.text
+
                     font.family: root.themeData.fontFamily
                     font.pointSize: root.themeData.fontSize
                     horizontalAlignment: Text.AlignHCenter
@@ -145,7 +164,7 @@ PanelWindow {
                     implicitHeight: 30
                     radius: 6
                     color: root.wallpaperMode
-                    ? root.palette.onAccent
+                    ? root.palette.accent
                     : root.palette.surface
 
                     border.width: 1
@@ -153,15 +172,17 @@ PanelWindow {
                     ? root.palette.accent
                     : root.palette.border
                 }
-
                 onClicked: {
                     root.wallpaperMode = !root.wallpaperMode;
 
-                    if (root.wallpaperMode)
-                    wallpaperGrid.forceActiveFocus();
-                    else
-                    search.forceActiveFocus();
+                    if (root.wallpaperMode) {
+                        root.focusCurrentWallpaper();
+                        wallpaperGrid.forceActiveFocus();
+                    } else {
+                        search.forceActiveFocus();
+                    }
                 }
+
             }
             Text {
                 text: "Accent"
@@ -435,7 +456,9 @@ PanelWindow {
 
             GridView {
                 id: wallpaperGrid
-
+                currentIndex: -1
+                keyNavigationEnabled: true
+                highlightMoveDuration: 80
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
@@ -457,16 +480,20 @@ PanelWindow {
 
                     readonly property bool current:
                     filePath === root.themeData.wallpaper
+                    readonly property bool selected:
+                    GridView.isCurrentItem
 
                     width: 168
                     height: 102
                     radius: 8
 
                     color: root.palette.surface
+                    border.width: current ? 3 : selected ? 2 : 1
 
-                    border.width: current ? 3 : 1
                     border.color: current
                     ? root.palette.accent
+                    : selected
+                    ? root.palette.text
                     : root.palette.border
 
                     clip: true
@@ -509,16 +536,38 @@ PanelWindow {
                             elide: Text.ElideMiddle
                         }
                     }
-
                     MouseArea {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
 
-                        onClicked:
-                        root.setWallpaper(wallpaperTile.filePath)
+                        onClicked: {
+                            wallpaperGrid.currentIndex = wallpaperTile.index;
+                            root.setWallpaper(wallpaperTile.filePath);
+                        }
+                    }
+
+                }
+                Keys.onReturnPressed: {
+                    if (currentIndex >= 0) {
+                        const path = wallpaperModel.get(
+                            currentIndex,
+                            "filePath"
+                        );
+
+                        root.setWallpaper(path);
                     }
                 }
 
+                Keys.onEnterPressed: {
+                    if (currentIndex >= 0) {
+                        const path = wallpaperModel.get(
+                            currentIndex,
+                            "filePath"
+                        );
+
+                        root.setWallpaper(path);
+                    }
+                }
                 Keys.onEscapePressed: {
                     root.wallpaperMode = false;
                     search.forceActiveFocus();
