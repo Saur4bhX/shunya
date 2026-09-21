@@ -8,14 +8,13 @@ action="${1:-}"
 value="${2:-}"
 
 case "$action" in
-    dark|light|toggle|apply|freeze-accent|auto-accent|set-accent|set-wallpaper)
+    dark|light|toggle|apply|freeze-accent|auto-accent|set-accent|set-wallpaper|next-wallpaper|prev-wallpaper|random-wallpaper)
         ;;
     *)
-        echo "Usage: shunya-theme {dark|light|toggle|apply|freeze-accent|auto-accent|set-accent [#RRGGBB]|set-wallpaper PATH}" >&2
-	exit 2
+        echo "Usage: shunya-theme {dark|light|toggle|apply|freeze-accent|auto-accent|set-accent [#RRGGBB]|set-wallpaper PATH|next-wallpaper|prev-wallpaper|random-wallpaper}" >&2
+        exit 2
         ;;
 esac
-
 
 # ---------------------------------------------------------------------------
 # Core SHUNYA theme state
@@ -27,14 +26,61 @@ import os
 import sys
 import tempfile
 from pathlib import Path
+import random
 
 theme_path = Path(sys.argv[1])
 hyprlock_path = Path(sys.argv[2])
 action = sys.argv[3]
 value = sys.argv[4]
+WALLPAPER_DIR = Path.home() / "Pictures" / "Wallpapers"
+
+SUPPORTED_WALLPAPER_EXTENSIONS = {
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp",
+}
 
 data = json.loads(theme_path.read_text())
 
+def wallpapers():
+    if not WALLPAPER_DIR.is_dir():
+        raise SystemExit(
+            f"Wallpaper directory does not exist: {WALLPAPER_DIR}"
+        )
+
+    images = sorted(
+        path.resolve()
+        for path in WALLPAPER_DIR.iterdir()
+        if path.is_file()
+        and path.suffix.lower() in SUPPORTED_WALLPAPER_EXTENSIONS
+    )
+
+    if not images:
+        raise SystemExit(
+            f"No wallpapers found in {WALLPAPER_DIR}"
+        )
+
+    return images
+
+
+def set_wallpaper(data, wallpaper):
+    wallpaper = Path(wallpaper).expanduser()
+
+    if not wallpaper.is_absolute():
+        wallpaper = (Path.cwd() / wallpaper).resolve()
+    else:
+        wallpaper = wallpaper.resolve()
+
+    if not wallpaper.is_file():
+        raise SystemExit(
+            f"Wallpaper does not exist: {wallpaper}"
+        )
+
+    data["wallpaper"] = str(wallpaper)
+
+    if data.get("accentMode") == "auto":
+        update_auto_accent(data)
 
 def update_auto_accent(data):
     if data.get("accentMode") != "auto":
@@ -117,21 +163,45 @@ if action == "set-accent":
     mode = current
 
 elif action == "set-wallpaper":
-    wallpaper = Path(value).expanduser()
-
-    if not wallpaper.is_absolute():
-        wallpaper = (Path.cwd() / wallpaper).resolve()
-    else:
-        wallpaper = wallpaper.resolve()
-
-    if not wallpaper.is_file():
-        raise SystemExit(f"Wallpaper does not exist: {wallpaper}")
-
-    data["wallpaper"] = str(wallpaper)
+    set_wallpaper(data, value)
     mode = current
 
-    if data.get("accentMode") == "auto":
-        update_auto_accent(data)
+elif action in (
+    "next-wallpaper",
+    "prev-wallpaper",
+    "random-wallpaper",
+):
+    images = wallpapers()
+
+    current_wallpaper = data.get("wallpaper")
+
+    try:
+        index = [
+            str(path)
+            for path in images
+        ].index(current_wallpaper)
+    except ValueError:
+        index = -1
+
+    if action == "next-wallpaper":
+        wallpaper = images[(index + 1) % len(images)]
+
+    elif action == "prev-wallpaper":
+        wallpaper = images[(index - 1) % len(images)]
+
+    else:
+        if len(images) == 1:
+            wallpaper = images[0]
+        else:
+            choices = [
+                path
+                for path in images
+                if str(path) != current_wallpaper
+            ]
+            wallpaper = random.choice(choices)
+
+    set_wallpaper(data, wallpaper)
+    mode = current
 
 elif action == "auto-accent":
     data["accentMode"] = "auto"
