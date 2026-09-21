@@ -23,13 +23,30 @@ hl.config({
 
         -- Mild blur for surfaces that deliberately use transparency.
         -- Opaque applications remain visually solid.
-        blur = {
-            enabled = true,
-            size = 3,
-            passes = 1,
-            vibrancy = 0.08,
-        },
+    blur = {
+    enabled = true,
+
+    -- Diffuse the wallpaper enough that it reads as glass,
+    -- not simple transparency.
+    size = 10,
+    passes = 2,
+
+    ignore_opacity = true,
+    new_optimizations = true,
+
+    -- Fine grain gives the surface a frosted texture.
+    noise = 0.025,
+
+    -- Flatten the background slightly for a milky glass look.
+    contrast = 0.82,
+    brightness = 0.94,
+
+    -- Preserve some wallpaper colour without becoming vivid.
+    vibrancy = 0.10,
+    vibrancy_darkness = 0.06,
+},
     },
+
 })
 
 -- ------------------------------------------------------------
