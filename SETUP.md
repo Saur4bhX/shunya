@@ -194,12 +194,14 @@ under:
 ```
 wallpaper
 ```
+Set or cycle wallpapers with:
 
-Set a wallpaper with:
+    shunya-theme set-wallpaper /path/to/wallpaper.jpg
+    shunya-theme next-wallpaper
+    shunya-theme prev-wallpaper
+    shunya-theme random-wallpaper
 
-```
-shunya-theme set-wallpaper /path/to/wallpaper.jpg
-```
+Wallpaper cycling uses images from `~/Pictures/Wallpapers`.
 
 `shunya-theme` then:
 
