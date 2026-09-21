@@ -28,7 +28,7 @@ hl.config({
 
     -- Diffuse the wallpaper enough that it reads as glass,
     -- not simple transparency.
-    size = 10,
+    size = 9,
     passes = 2,
 
     ignore_opacity = true,
