@@ -23,15 +23,16 @@ esac
 python3 - "$THEME_FILE" "$HYPRLOCK_FILE" "$action" "$value" <<'PY'
 import json
 import os
+import random
 import sys
 import tempfile
 from pathlib import Path
-import random
 
 theme_path = Path(sys.argv[1])
 hyprlock_path = Path(sys.argv[2])
 action = sys.argv[3]
 value = sys.argv[4]
+
 WALLPAPER_DIR = Path.home() / "Pictures" / "Wallpapers"
 
 SUPPORTED_WALLPAPER_EXTENSIONS = {
@@ -42,6 +43,7 @@ SUPPORTED_WALLPAPER_EXTENSIONS = {
 }
 
 data = json.loads(theme_path.read_text())
+
 
 def wallpapers():
     if not WALLPAPER_DIR.is_dir():
@@ -63,24 +65,6 @@ def wallpapers():
 
     return images
 
-
-def set_wallpaper(data, wallpaper):
-    wallpaper = Path(wallpaper).expanduser()
-
-    if not wallpaper.is_absolute():
-        wallpaper = (Path.cwd() / wallpaper).resolve()
-    else:
-        wallpaper = wallpaper.resolve()
-
-    if not wallpaper.is_file():
-        raise SystemExit(
-            f"Wallpaper does not exist: {wallpaper}"
-        )
-
-    data["wallpaper"] = str(wallpaper)
-
-    if data.get("accentMode") == "auto":
-        update_auto_accent(data)
 
 def update_auto_accent(data):
     if data.get("accentMode") != "auto":
@@ -121,6 +105,25 @@ def update_auto_accent(data):
 
     data["dark"]["onAccent"] = colors["on_primary"]["dark"]["color"]
     data["light"]["onAccent"] = colors["on_primary"]["light"]["color"]
+
+
+def set_wallpaper(data, wallpaper):
+    wallpaper = Path(wallpaper).expanduser()
+
+    if not wallpaper.is_absolute():
+        wallpaper = (Path.cwd() / wallpaper).resolve()
+    else:
+        wallpaper = wallpaper.resolve()
+
+    if not wallpaper.is_file():
+        raise SystemExit(
+            f"Wallpaper does not exist: {wallpaper}"
+        )
+
+    data["wallpaper"] = str(wallpaper)
+
+    if data.get("accentMode") == "auto":
+        update_auto_accent(data)
 
 
 update_auto_accent(data)
@@ -255,6 +258,8 @@ def atomic_write(path: Path, text: str):
             pass
 
         raise
+
+
 wallpaper = data.get("wallpaper")
 
 if wallpaper:
@@ -337,12 +342,12 @@ wallpaper=$(python3 -c \
 )
 
 if [[ -n "$wallpaper" ]] &&
-   command -v hyprctl >/dev/null 2>&1 &&
-   pgrep -x hyprpaper >/dev/null 2>&1; then
+    command -v hyprctl >/dev/null 2>&1 &&
+    pgrep -x hyprpaper >/dev/null 2>&1; then
 
-   hyprctl hyprpaper wallpaper \
-       ", $wallpaper, cover" \
-       >/dev/null 2>&1 || true
+    hyprctl hyprpaper wallpaper \
+        ",$wallpaper,cover" \
+        >/dev/null 2>&1 || true
 fi
 
 mode=$(python3 -c \
@@ -356,7 +361,7 @@ mode=$(python3 -c \
 # ---------------------------------------------------------------------------
 
 if command -v hyprctl >/dev/null 2>&1 &&
-   hyprctl monitors -j >/dev/null 2>&1; then
+    hyprctl monitors -j >/dev/null 2>&1; then
 
     read -r hypr_accent hypr_border < <(
         python3 - "$THEME_FILE" <<'PY'
@@ -506,8 +511,6 @@ def update_appearance(text, values):
 
 
 for qt in ("qt5ct", "qt6ct"):
-    qt6 = qt == "qt6ct"
-
     base = Path.home() / ".config" / qt
     colors_dir = base / "colors"
 
@@ -530,6 +533,7 @@ for qt in ("qt5ct", "qt6ct"):
             palette,
             disabled=True,
         )
+
         palette_path = colors_dir / f"shunya-{palette_mode}.conf"
 
         palette_path.write_text(
@@ -540,7 +544,6 @@ for qt in ("qt5ct", "qt6ct"):
         )
 
     selected = colors_dir / f"shunya-{mode}.conf"
-
     config = base / f"{qt}.conf"
 
     if config.exists():
@@ -612,7 +615,7 @@ for mode, path in themes.items():
         )
 
     # Section-specific Kvantum overrides.
-        # Semantic Kvantum text colors.
+    # Semantic Kvantum text colors.
     section_replacements = {
         "PanelButtonCommand": {
             "text.normal.color": palette["text"],
@@ -620,90 +623,73 @@ for mode, path in themes.items():
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
-
         "Dock": {
             "text.normal.color": palette["text"],
         },
-
         "DockTitle": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
         },
-
         "IndicatorSpinBox": {
             "text.normal.color": palette["text"],
         },
-
         "RadioButton": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
         },
-
         "CheckBox": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
         },
-
         "ToolboxTab": {
             "text.normal.color": palette["text"],
             "text.press.color": palette["text"],
             "text.focus.color": palette["text"],
         },
-
         "Tab": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
             "text.toggle.color": palette["accent"],
         },
-
         "HeaderSection": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["accent"],
             "text.toggle.color": palette["text"],
         },
-
         "Toolbar": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
         },
-
         "Progressbar": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
-
         "ItemView": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
-
         "MenuItem": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["onAccent"],
         },
-
         "MenuBarItem": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["onAccent"],
         },
-
         "TitleBar": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
         },
-
         "ComboBox": {
             "text.press.color": palette["onAccent"],
         },
-
         "Menu": {
             "text.normal.color": palette["text"],
         },
-
         "GroupBox": {
             "text.normal.color": palette["text"],
             "text.focus.color": palette["text"],
@@ -747,7 +733,6 @@ svg_themes = {
         Path.home()
         / ".config/Kvantum/SHUNYA/SHUNYA.svg"
     ),
-
     "light": (
         Path.home()
         / ".config/Kvantum/SHUNYA-Light/SHUNYA-Light.svg"
@@ -759,7 +744,6 @@ template_paths = {
         Path.home()
         / "shunya/config/Kvantum/SHUNYA/SHUNYA.svg"
     ),
-
     "light": (
         Path.home()
         / "shunya/config/Kvantum/SHUNYA-Light/SHUNYA-Light.svg"
@@ -782,7 +766,6 @@ for theme_mode, svg_path in svg_themes.items():
         continue
 
     accent = data[theme_mode]["accent"]
-
     svg = template_path.read_text()
 
     svg = re.sub(
@@ -929,6 +912,7 @@ for version in ("gtk-3.0", "gtk-4.0"):
     path.write_text(css)
 PY
 
+
 # ---------------------------------------------------------------------------
 # Dolphin color scheme
 # ---------------------------------------------------------------------------
@@ -946,6 +930,8 @@ if command -v kwriteconfig6 >/dev/null 2>&1; then
         --key ColorScheme \
         "$dolphin_scheme"
 fi
+
+
 # ---------------------------------------------------------------------------
 # Activate Kvantum mode
 # ---------------------------------------------------------------------------
@@ -955,6 +941,7 @@ if [[ "$mode" == "dark" ]]; then
 else
     kvantummanager --set SHUNYA-Light >/dev/null
 fi
+
 
 # ---------------------------------------------------------------------------
 # Kitty palette
@@ -1009,7 +996,7 @@ def mix(a, b, amount):
 
 accent = p["accent"]
 on_accent = p["onAccent"]
-
+kitty_opacity = "1.0" if mode == "light" else "0.82"
 
 # ---------------------------------------------------------------------------
 # SHUNYA terminal surfaces
@@ -1024,25 +1011,17 @@ on_accent = p["onAccent"]
 #   - follows normal SHUNYA surfaces
 #   - slightly brighter foreground for sharper text
 # ---------------------------------------------------------------------------
-
 if mode == "light":
-    kitty_background = mix("#ffffff", accent, 0.055)
-    kitty_surface = mix("#f2f2f4", accent, 0.10)
-
-    # Dark, crisp foreground with only a tiny wallpaper tint.
-    kitty_text = mix("#211f26", accent, 0.035)
-
-    kitty_border = mix("#b8b7c0", accent, 0.14)
-
+    # Clean opaque light surface.
+    kitty_background = mix("#f5f5f7", accent, 0.010)
+    kitty_surface = mix("#ebebef", accent, 0.015)
+    kitty_text = mix("#1c1c1e", accent, 0.004)
+    kitty_border = mix("#c5c5cc", accent, 0.025)
 else:
     kitty_background = p["background"]
     kitty_surface = p["surface"]
-
-    # Slightly brighten SHUNYA dark text for stronger terminal contrast.
     kitty_text = mix(p["text"], "#ffffff", 0.08)
-
     kitty_border = p["border"]
-
 
 # ---------------------------------------------------------------------------
 # ANSI palette
@@ -1075,37 +1054,30 @@ dark_ansi = [
     "#ffffff",  # 15 bright white
 ]
 
-
 light_ansi_base = [
-    "#403b48",  # 0  black
-    "#d7264f",  # 1  red
-    "#42a62a",  # 2  green
-    "#d99000",  # 3  yellow
-    "#246cf2",  # 4  blue
-    "#9a45e5",  # 5  magenta
-    "#08979c",  # 6  cyan
-    "#8e8995",  # 7  white
+    "#2c2c2e",  # black
+    "#d71945",  # red
+    "#238636",  # green
+    "#b86b00",  # yellow
+    "#0969da",  # blue
+    "#8a3fd0",  # magenta
+    "#007f8b",  # cyan
+    "#6e6e73",  # white
 
-    "#625c69",  # 8  bright black
-    "#ef405f",  # 9  bright red
-    "#59b83b",  # 10 bright green
-    "#eba600",  # 11 bright yellow
-    "#3c82ff",  # 12 bright blue
-    "#ad5cf0",  # 13 bright magenta
-    "#13aeb2",  # 14 bright cyan
-    "#28242d",  # 15 bright white
+    "#5c5c62",  # bright black / muted
+    "#ef3458",  # bright red
+    "#32a852",  # bright green
+    "#d88900",  # bright yellow
+    "#287cff",  # bright blue
+    "#a653e3",  # bright magenta
+    "#009ca8",  # bright cyan
+    "#1c1c1e",  # bright white
 ]
 
-
 if mode == "light":
-    # Very subtle wallpaper harmony while preserving vivid ANSI hues.
-    ansi = [
-        mix(color, accent, 0.025)
-        for color in light_ansi_base
-    ]
+    ansi = light_ansi_base
 else:
     ansi = dark_ansi
-
 
 # ---------------------------------------------------------------------------
 # Generate Kitty theme
@@ -1114,7 +1086,11 @@ else:
 lines = [
     "# Generated by shunya-theme. Do not edit.",
     "",
-
+    
+    "# Window",
+    f"background_opacity {kitty_opacity}",
+    "",
+    
     "# Core",
     f"background {kitty_background}",
     f"foreground {kitty_text}",
@@ -1148,12 +1124,10 @@ lines = [
     "",
 ]
 
-
 for i, color in enumerate(ansi):
     lines.append(f"color{i} {color}")
 
 lines.append("")
-
 
 # ---------------------------------------------------------------------------
 # Atomic write
@@ -1166,3 +1140,8 @@ tmp = output.with_suffix(".conf.tmp")
 tmp.write_text("\n".join(lines))
 os.replace(tmp, output)
 PY
+
+# Reload running Kitty instances after theme generation.
+if pgrep -x kitty >/dev/null 2>&1; then
+    pkill -USR1 -x kitty 2>/dev/null || true
+fi
