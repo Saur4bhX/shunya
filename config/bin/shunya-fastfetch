@@ -36,8 +36,8 @@ fi
 exec fastfetch \
     --logo "$logo" \
     --logo-type kitty-direct \
-    --logo-width 20 \
-    --logo-height 11 \
+    --logo-width 16 \
+    --logo-height 8 \
     --logo-padding-left 1 \
-    --logo-padding-right 4 \
+    --logo-padding-right 3 \
     --logo-padding-top 1
