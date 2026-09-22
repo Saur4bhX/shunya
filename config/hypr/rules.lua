@@ -44,3 +44,11 @@ hl.window_rule {
     float = true,
     center = true,
 }
+hl.layer_rule({
+    match = {
+        namespace = "shunya-osd",
+    },
+
+    blur = true,
+    ignore_alpha = 0.15,
+})
