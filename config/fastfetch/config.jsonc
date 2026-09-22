@@ -1,40 +1,16 @@
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
 
-    // ------------------------------------------------------------------------
-    // SHUNYA logo
-    // ------------------------------------------------------------------------
-
     "logo": {
-        "type": "file",
-        "source": "~/.config/fastfetch/logo.txt",
-
-        "padding": {
-            "top": 1,
-            "left": 2,
-            "right": 4
-        },
-
-        "color": {
-            "1": "cyan",
-            "2": "blue"
-        }
+        "type": "none"
     },
 
-    // ------------------------------------------------------------------------
-    // SHUNYA display
-    // ------------------------------------------------------------------------
-
     "display": {
-        "separator": "  ",
+        "separator": " ",
 
         "key": {
-            "width": 12,
+            "width": 11,
             "type": "string"
-        },
-
-        "color": {
-            "keys": "cyan"
         },
 
         "percent": {
@@ -47,38 +23,32 @@
         "showErrors": false
     },
 
-    // ------------------------------------------------------------------------
-    // Modules
-    // ------------------------------------------------------------------------
-
     "modules": [
-
-        // ====================================================================
-        // SYSTEM
-        // ====================================================================
-
         {
             "type": "custom",
-            "format": "──── SYSTEM ─────────────────────────────────",
-            "outputColor": "cyan"
+            "format": "── SYSTEM ─────────────────────────────",
+            "outputColor": "bright_cyan"
         },
 
         {
             "type": "host",
             "key": "󰌢 Machine",
-            "format": "{name:-26} {?version}({version:-14}){?}"
+            "keyColor": "bright_cyan",
+            "format": "{name:-22} {?version}({version:-12}){?}"
         },
 
         {
             "type": "cpu",
             "key": "󰍛 CPU",
+            "keyColor": "bright_blue",
             "temp": true,
-            "format": "{name:-22} @ {freq-max}"
+            "format": "{name:-19} @ {freq-max}"
         },
 
         {
             "type": "cpu",
             "key": "󰍛 Temp",
+            "keyColor": "bright_red",
             "temp": true,
             "format": "{temperature}"
         },
@@ -86,66 +56,61 @@
         {
             "type": "cpuusage",
             "key": "󰍛 Load",
+            "keyColor": "bright_yellow",
             "format": "{avg}"
         },
 
         {
             "type": "gpu",
             "key": "󰢮 GPU",
-            "format": "{name:-30} {?frequency}@ {frequency}{?}"
+            "keyColor": "bright_magenta",
+            "format": "{name:-24} {?frequency}@ {frequency}{?}"
         },
 
         {
             "type": "display",
             "key": "󰍹 Display",
-            "format": "{width}x{height} @ {refresh-rate} Hz [{type}]"
+            "keyColor": "bright_blue",
+            "format": "{width}x{height} @ {refresh-rate} Hz"
         },
 
         {
             "type": "memory",
             "key": "󰘚 Memory",
+            "keyColor": "bright_magenta",
             "format": "{used} / {total} ({percentage})"
         },
 
-        "break",
-
-        // ====================================================================
-        // POWER & AUDIO
-        // ====================================================================
-
         {
             "type": "custom",
-            "format": "──── POWER & AUDIO ──────────────────────────",
-            "outputColor": "cyan"
+            "format": "── POWER / AUDIO ──────────────────────",
+            "outputColor": "bright_green"
         },
 
         {
             "type": "battery",
             "key": "󰁹 Battery",
+            "keyColor": "bright_green",
             "format": "{capacity} [{status}]"
         },
 
         {
             "type": "sound",
             "key": "󰕾 Sound",
-            "format": "{name:-28} ({volume-percentage})"
+            "keyColor": "bright_yellow",
+            "format": "{name:-22} ({volume-percentage})"
         },
-        
-        "break",
-
-        // ====================================================================
-        // STORAGE & NETWORK
-        // ====================================================================
 
         {
             "type": "custom",
-            "format": "──── STORAGE & NETWORK ──────────────────────",
-            "outputColor": "cyan"
+            "format": "── STORAGE / NETWORK ──────────────────",
+            "outputColor": "bright_blue"
         },
 
         {
             "type": "disk",
             "key": "󰋊 Disk",
+            "keyColor": "bright_blue",
             "folders": "/",
             "format": "{size-used} / {size-total} ({size-percentage})"
         },
@@ -153,65 +118,54 @@
         {
             "type": "wifi",
             "key": "󰖩 Wi-Fi",
-            "format": "{ssid:-22} {protocol} {band} GHz ({signal-quality})"
+            "keyColor": "bright_cyan",
+            "format": "{ssid:-18} {band} GHz ({signal-quality})"
         },
-
-        "break",
-
-        // ====================================================================
-        // SHUNYA
-        // ====================================================================
 
         {
             "type": "custom",
-            "format": "──── SHUNYA ─────────────────────────────────",
-            "outputColor": "cyan"
+            "format": "── SHUNYA ─────────────────────────────",
+            "outputColor": "bright_magenta"
         },
 
         {
             "type": "os",
-            "key": "󰣇 OS"
+            "key": "󰣇 OS",
+            "keyColor": "bright_magenta"
         },
 
         {
             "type": "kernel",
             "key": "󰒋 Kernel",
-            "format": "{sysname} {release}"
+            "keyColor": "bright_blue",
+            "format": "{release}"
         },
 
         {
             "type": "wm",
             "key": "󰖲 WM",
-            "format": "{pretty-name} {version} ({protocol-name})"
+            "keyColor": "bright_cyan",
+            "format": "{pretty-name} {version}"
         },
 
         {
             "type": "shell",
             "key": " Shell",
+            "keyColor": "bright_green",
             "format": "{pretty-name} {version}"
         },
 
         {
             "type": "terminal",
             "key": "󰆍 Terminal",
+            "keyColor": "bright_yellow",
             "format": "{pretty-name} {version}"
-        },
-
-        "break",
-
-        // ====================================================================
-        // SESSION
-        // ====================================================================
-
-        {
-            "type": "custom",
-            "format": "──── SESSION ────────────────────────────────",
-            "outputColor": "cyan"
         },
 
         {
             "type": "uptime",
-            "key": "󰔟 Uptime"
-        },
+            "key": "󰔟 Uptime",
+            "keyColor": "bright_cyan"
+        }
     ]
 }

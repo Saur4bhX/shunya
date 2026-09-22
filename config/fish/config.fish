@@ -18,13 +18,15 @@ if status is-interactive
         set -l marker "$XDG_RUNTIME_DIR/shunya-fastfetch-shown"
 
         if not test -e "$marker"
-            if type -q fastfetch
-                fastfetch
+            if type -q shunya-fastfetch
+                shunya-fastfetch
                 and touch "$marker"
             end
         end
     end
-
+    function ff
+       ~/.config/bin/shunya-fastfetch
+    end
     # -------------------------------------------------------------------------
     # SHUNYA prompt
     # -------------------------------------------------------------------------

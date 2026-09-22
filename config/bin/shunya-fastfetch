@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+THEME_FILE="$HOME/.config/shunya/theme.json"
+ASSET_DIR="$HOME/.config/shunya/assets/fastfetch"
+
+mode="dark"
+
+if [[ -f "$THEME_FILE" ]]; then
+    mode=$(
+        python3 - "$THEME_FILE" <<'PY'
+import json
+import sys
+
+try:
+    with open(sys.argv[1]) as f:
+        data = json.load(f)
+
+    print(data.get("mode", "dark"))
+except Exception:
+    print("dark")
+PY
+    )
+fi
+
+if [[ "$mode" == "light" ]]; then
+    logo="$ASSET_DIR/shunya-light.png"
+else
+    logo="$ASSET_DIR/shunya-dark.png"
+fi
+
+if [[ ! -f "$logo" ]]; then
+    exec fastfetch
+fi
+
+exec fastfetch \
+    --logo "$logo" \
+    --logo-type kitty-direct \
+    --logo-width 20 \
+    --logo-height 11 \
+    --logo-padding-left 1 \
+    --logo-padding-right 4 \
+    --logo-padding-top 1
