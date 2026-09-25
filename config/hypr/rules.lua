@@ -44,6 +44,7 @@ hl.window_rule {
     float = true,
     center = true,
 }
+
 hl.layer_rule({
     match = {
         namespace = "shunya-osd",
@@ -52,3 +53,16 @@ hl.layer_rule({
     blur = true,
     ignore_alpha = 0.15,
 })
+
+hl.window_rule({
+    name = "strawberry",
+
+    match = {
+        class = "^org[.]strawberrymusicplayer[.]strawberry$",
+    },
+
+    workspace = "3",
+    opacity = "0.87 override 0.85 override 1.0 override",
+})
+
+

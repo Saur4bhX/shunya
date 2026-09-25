@@ -72,3 +72,7 @@ noto-fonts-emoji
 ttf-liberation
 ttf-nerd-fonts-symbols
 ttf-nerd-fonts-symbols-mono
+strawberry
+gst-libav
+gst-plugins-bad
+gst-plugins-ugly

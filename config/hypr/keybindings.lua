@@ -5,6 +5,7 @@ local mod = "SUPER"
 local terminal = "kitty"
 local browser = "brave"
 local file_manager = "dolphin"
+local music_player = "strawberry"
 
 -- Applications
 
@@ -13,7 +14,7 @@ hl.bind(mod .. " + T", 	    hl.dsp.exec_cmd(terminal))
 hl.bind(mod .. " + W",      hl.dsp.exec_cmd(browser))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd(file_manager))
-
+hl.bind(mod .. " + M", hl.dsp.exec_cmd(music_player))
 -- ---------------------------------------------------------------------------
 -- Launcher: short left-Super press
 --
