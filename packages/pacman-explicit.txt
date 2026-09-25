@@ -76,3 +76,5 @@ gst-libav
 gst-plugins-bad
 gst-plugins-ugly
 libreoffice-fresh
+swayimg
+gthumb

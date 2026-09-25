@@ -60,3 +60,35 @@ Relevant configuration:
 
     config/hypr/rules.lua
     config/hypr/keybindings.lua
+
+## Image Viewing
+
+Packages:
+
+    swayimg
+    gthumb
+
+### swayimg
+
+swayimg is the default lightweight image viewer.
+
+SHUNYA custom controls:
+
+- `h j k l` — Vim-style pan/navigation
+- `r` — rotate 90° clockwise
+- `Shift + r` — rotate 90° counter-clockwise
+- `0` — reset zoom and position
+- `g` — open gallery
+- `Space` — toggle fullscreen
+- `q` — quit
+
+Configuration:
+
+    config/swayimg/init.lua
+
+swayimg is registered as the default handler for common image formats.
+
+### gThumb
+
+gThumb is used for browsing and organising image collections.
+It complements swayimg rather than replacing the lightweight viewer.
