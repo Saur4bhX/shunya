@@ -1,5 +1,5 @@
 -- SHUNYA custom keybinds for swayimg
-
+swayimg.appid = "shunya-swayimg"
 local pan_step = 80
 
 local function pan(dx, dy)

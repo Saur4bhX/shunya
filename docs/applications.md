@@ -70,6 +70,12 @@ Packages:
 
 ### swayimg
 
+SHUNYA integration:
+
+- swayimg is the default lightweight image viewer.
+- swayimg opens as a centered floating popup.
+- `Space` toggles fullscreen.
+
 swayimg is the default lightweight image viewer.
 
 SHUNYA custom controls:
@@ -92,3 +98,8 @@ swayimg is registered as the default handler for common image formats.
 
 gThumb is used for browsing and organising image collections.
 It complements swayimg rather than replacing the lightweight viewer.
+
+SHUNYA integration:
+- gThumb is the image organiser.
+- `SUPER + I` opens gThumb at `~/Pictures`.
+- gThumb opens maximized on workspace 5.

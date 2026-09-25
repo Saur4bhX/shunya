@@ -76,4 +76,30 @@ hl.window_rule({
     maximize = true,
 })
 
+hl.window_rule({
+    name = "swayimg-popup",
+
+    match = {
+        class = "^shunya-swayimg$",
+    },
+
+    float = true,
+    center = true,
+
+    size = {
+        "monitor_w*0.68",
+        "monitor_h*0.72",
+    },
+})
+
+hl.window_rule({
+    name = "gthumb-organizer",
+
+    match = {
+        class = "^org[.]gnome[.]gThumb$",
+    },
+
+    workspace = "5",
+    maximize = true,
+})
 

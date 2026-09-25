@@ -7,6 +7,8 @@ local browser = "brave"
 local file_manager = "dolphin"
 local music_player = "strawberry"
 local office = "libreoffice"
+local image_organizer = "gthumb " .. os.getenv("HOME") .. "/Pictures"
+
 
 -- Applications
 
@@ -17,6 +19,7 @@ hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd(file_manager))
 hl.bind(mod .. " + M", hl.dsp.exec_cmd(music_player))
 hl.bind(mod .. " + O", hl.dsp.exec_cmd(office))
+hl.bind(mod .. " + I", hl.dsp.exec_cmd(image_organizer))
 
 -- ---------------------------------------------------------------------------
 -- Launcher: short left-Super press
