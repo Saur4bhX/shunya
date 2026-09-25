@@ -120,4 +120,82 @@ SHUNYA integration:
 - No autostart; KeePassXC is launched only when needed.
 - Window opacity remains 1.0.
 
+## mpv
+
+Package:
+
+    mpv
+
+SHUNYA integration:
+
+- Lightweight default video player.
+- Uses VA-API only for codecs supported by the Intel GPU.
+- HEVC falls back to software decoding.
+- Resume playback position enabled.
+- No dedicated workspace rule.
+- No autostart.
+
+Configuration:
+
+    config/mpv/mpv.conf
+
+## Transmission
+
+Package:
+
+    transmission-gtk
+
+SHUNYA integration:
+
+- Uses the system GTK theme.
+- Downloads stored under `~/Downloads/Torrents`.
+- No dedicated workspace rule.
+- No autostart.
+
+## Obsidian
+
+Package:
+
+    obsidian
+
+SHUNYA integration:
+
+- Uses Obsidian's default theme.
+- Base color scheme follows the system where possible.
+- No Hyprland workspace rule.
+- No autostart.
+- Vault configuration remains separate from SHUNYA.
+
+## Zathura
+
+Packages:
+
+    zathura
+    zathura-pdf-mupdf
+
+SHUNYA integration:
+
+- Default PDF reader.
+- Vim-style keyboard workflow.
+- UI palette generated from SHUNYA theme state.
+- PDF page colors remain unchanged by default.
+- Document recoloring remains opt-in.
+
+Configuration:
+
+    config/zathura/zathurarc
+
+## Okular
+
+Package:
+
+    okular
+
+SHUNYA integration:
+
+- Secondary PDF reader for annotations, forms, and complex documents.
+- Color scheme set to Kvantum so it follows the SHUNYA Qt theme.
+- PDF page colors remain unchanged.
+- Window opacity remains 1.0.
+- No dedicated workspace rule.
 

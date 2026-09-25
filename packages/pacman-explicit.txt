@@ -78,3 +78,10 @@ libreoffice-fresh
 swayimg
 gthumb
 keepassxc
+zathura
+zathura-pdf-mupdf
+mpv
+transmission-gtk
+obsidian
+libva-utils
+libva-intel-driver

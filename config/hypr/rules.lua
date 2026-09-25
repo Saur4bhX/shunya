@@ -102,4 +102,3 @@ hl.window_rule({
     workspace = "5",
     maximize = true,
 })
-
