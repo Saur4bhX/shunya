@@ -98,7 +98,12 @@ PanelWindow {
     WlrLayershell.namespace: "shunya-launcher"
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+    Shortcut {
+        sequence: "Esc"
+        context: Qt.ApplicationShortcut
 
+        onActivated: Qt.quit()
+    }
     readonly property var matches: {
         const query = search.text.trim().toLowerCase();
 
@@ -280,8 +285,6 @@ PanelWindow {
             Component.onCompleted: forceActiveFocus()
             onTextChanged: results.currentIndex = 0
             onAccepted: root.launch(results.currentIndex)
-
-            Keys.onEscapePressed: Qt.quit()
 
             Keys.onDownPressed: {
                 if (results.count > 0) {
@@ -616,10 +619,6 @@ PanelWindow {
 
                         root.setWallpaper(path);
                     }
-                }
-                Keys.onEscapePressed: {
-                    root.wallpaperMode = false;
-                    search.forceActiveFocus();
                 }
 
                 Text {

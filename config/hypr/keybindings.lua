@@ -14,14 +14,58 @@ hl.bind(mod .. " + W",      hl.dsp.exec_cmd(browser))
 hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("qutebrowser"))
 hl.bind(mod .. " + E",      hl.dsp.exec_cmd(file_manager))
 
--- Tap left Super alone to toggle the launcher
-hl.bind(
-    "SUPER + SUPER_L",
-    hl.dsp.exec_cmd(
-        [[pkill -u "$USER" -fx 'quickshell -c shunya' || quickshell -c shunya]]
-    ),
-    { release = true }
-)
+-- ---------------------------------------------------------------------------
+-- Launcher: short left-Super press
+--
+-- Toggle launcher only when:
+--   - left Super is pressed by itself
+--   - no other key is pressed while Super is held
+--   - Super is released within 1000 ms
+-- ---------------------------------------------------------------------------
+
+local launcher_super_keycode = 133
+local launcher_press_time = nil
+local launcher_armed = false
+
+hl.on("input.keyboard.key", function(keycode, timestamp, state)
+    -- state:
+    --   0 = released
+    --   1 = pressed
+    --   2 = repeated
+
+    -- Left Super
+    if keycode == launcher_super_keycode then
+        if state == 1 then
+            launcher_press_time = timestamp
+            launcher_armed = true
+
+        elseif state == 0 then
+            local should_toggle = false
+
+            if launcher_armed and launcher_press_time then
+                local held_ms = timestamp - launcher_press_time
+                should_toggle = held_ms >= 0 and held_ms <= 1000
+            end
+
+            launcher_press_time = nil
+            launcher_armed = false
+
+            if should_toggle then
+                hl.exec_cmd(
+                    [[pkill -u "$USER" -fx 'quickshell -c shunya' || quickshell -c shunya]]
+                )
+            end
+        end
+
+        return
+    end
+
+    -- Any other key pressed while Super is down cancels launcher activation.
+    if launcher_press_time and state == 1 then
+        launcher_armed = false
+    end
+end)
+
 -- Window and session controls
 hl.bind(mod .. " + Q", hl.dsp.window.close())
 hl.bind(mod .. " + SHIFT + Q", hl.dsp.exit())
