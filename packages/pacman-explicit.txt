@@ -27,7 +27,6 @@ hyprlock
 hyprpaper
 intel-ucode
 kdeconnect
-keepass
 kitty
 kvantum
 kvantum-qt5
@@ -78,3 +77,4 @@ gst-plugins-ugly
 libreoffice-fresh
 swayimg
 gthumb
+keepassxc

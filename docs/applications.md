@@ -103,3 +103,21 @@ SHUNYA integration:
 - gThumb is the image organiser.
 - `SUPER + I` opens gThumb at `~/Pictures`.
 - gThumb opens maximized on workspace 5.
+
+## KeePassXC
+
+Package:
+
+    keepassxc
+
+SHUNYA integration:
+
+- Uses the system Qt/Kvantum theme.
+- Existing local KDBX database is used.
+- Browser integration is enabled through KeePassXC-Browser.
+- No dedicated workspace rule.
+- No SHUNYA keybinding.
+- No autostart; KeePassXC is launched only when needed.
+- Window opacity remains 1.0.
+
+
