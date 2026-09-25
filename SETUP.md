@@ -508,6 +508,7 @@ Do not commit:
 * browser profiles
 * phone.env
 * temporary files
+* generated `MANUAL_SETUP.md`
 * machine-specific secrets
 
 These are excluded intentionally and must be recreated or paired on a
@@ -524,7 +525,141 @@ The shunya-bar Quickshell process provides both popups.
 * On different hardware, update the backlight device in the brightness
   script using the output of `brightnessctl -l`.
 
-## 14. Verification
+## 14. Fonts
+
+SHUNYA uses the following font stack:
+
+- UI: Noto Sans
+- Serif: Noto Serif
+- Terminal: Source Code Pro
+- CJK: Noto Sans CJK
+- Emoji: Noto Color Emoji
+- Symbols: Noto Sans Symbols 2
+- Nerd glyphs: Symbols Nerd Font / Symbols Nerd Font Mono
+
+Fontconfig is stored at:
+
+`config/fontconfig/fonts.conf`
+
+After installation:
+
+```sh
+fc-cache -f
+```
+
+## 15. Manual Post-Installation Setup
+
+SHUNYA automates configuration that can be reproduced safely and
+deterministically. Some operations still require user interaction or
+machine-specific information and must therefore remain manual.
+
+Examples include:
+
+* KDE Connect pairing
+* Android USB authorization and ADB TCP initialization
+* Bluetooth device pairing
+* browser account/profile setup
+* SSH/SFTP credentials
+* NTFS/Windows volume mount configuration
+
+Permanent reusable guides for these tasks are stored in:
+
+```
+docs/manual-setup/
+```
+
+The current manual setup guides are:
+
+```
+docs/manual-setup/kde-connect.md
+docs/manual-setup/android-debugging.md
+docs/manual-setup/bluetooth.md
+docs/manual-setup/browser.md
+docs/manual-setup/ssh-sftp.md
+docs/manual-setup/ntfs.md
+```
+
+At the end of installation, `install.sh` detects which manual tasks are
+relevant to the current machine and generates:
+
+```
+~/shunya/MANUAL_SETUP.md
+```
+
+The generated file is a machine-specific step-by-step checklist. It may
+include detected system information that makes the instructions easier to
+follow, such as filesystem layout, user UID and GID.
+
+Open it with:
+
+```
+less ~/shunya/MANUAL_SETUP.md
+```
+
+Complete each section in order and use the **Done when** checks before
+moving to the next section.
+
+`MANUAL_SETUP.md` is generated locally, may be replaced on a later installer
+run, and must not be committed to Git. The permanent source documentation
+remains `SETUP.md` together with the tracked files under
+`docs/manual-setup/`.
+
+Whenever a new SHUNYA feature requires manual post-installation work:
+
+1. Add a focused guide under `docs/manual-setup/`.
+2. Explain why the step cannot be safely automated.
+3. Give exact commands or UI steps.
+4. Include a verification step and a clear **Done when** condition.
+5. Register the guide with the installer so it appears in
+   `MANUAL_SETUP.md` only when relevant.
+
+This keeps portable SHUNYA configuration reproducible while making
+machine-specific setup explicit and easy to complete.
+
+## 16. NTFS / Windows Volumes
+
+Windows/NTFS data volumes are machine-specific and are not hard-coded in
+the SHUNYA repository.
+
+When the installer detects NTFS filesystems, it adds the NTFS guide to the
+generated `MANUAL_SETUP.md` and includes the detected filesystem layout and
+current user's UID/GID for reference.
+
+On a fresh installation, identify available filesystems with:
+
+    lsblk -f
+
+For NTFS volumes that should mount automatically, create suitable mount
+points, for example:
+
+    sudo mkdir -p /mnt/windows /mnt/edu /mnt/work /mnt/mul
+
+Determine the normal user's UID and GID:
+
+    id -u
+    id -g
+
+Add each required NTFS volume to `/etc/fstab` using its filesystem UUID
+rather than `/dev/sdX` device names.
+
+Example:
+
+    UUID=<NTFS-UUID>  /mnt/<name>  ntfs3  rw,uid=<UID>,gid=<GID>,umask=022,nofail  0  0
+
+Test the configuration before rebooting:
+
+    sudo mount -a
+    findmnt -t ntfs3
+
+Verify read/write access as the normal user.
+
+Windows Fast Startup / hibernation must be disabled before routinely
+mounting Windows NTFS volumes read/write from Linux.
+
+NTFS UUIDs and machine-specific mount layouts must not be committed to
+portable SHUNYA configuration.
+
+## 17. Verification
 
 After restoring SHUNYA, verify:
 

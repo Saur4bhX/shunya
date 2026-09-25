@@ -27,3 +27,6 @@ key.pem
 
 # Browser profiles
 BraveSoftware/
+
+# Generated machine-specific post-install checklist
+/MANUAL_SETUP.md
