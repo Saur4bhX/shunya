@@ -33,7 +33,6 @@ kvantum
 kvantum-qt5
 less
 libnotify
-libreoffice-still
 linux
 linux-firmware
 matugen
@@ -76,3 +75,4 @@ strawberry
 gst-libav
 gst-plugins-bad
 gst-plugins-ugly
+libreoffice-fresh

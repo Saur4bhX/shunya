@@ -65,4 +65,15 @@ hl.window_rule({
     opacity = "0.87 override 0.85 override 1.0 override",
 })
 
+hl.window_rule({
+    name = "libreoffice",
+
+    match = {
+        class = "^libreoffice.*$",
+    },
+
+    workspace = "4",
+    maximize = true,
+})
+
 
