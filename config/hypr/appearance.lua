@@ -44,6 +44,10 @@ hl.config({
     -- Preserve some wallpaper colour without becoming vivid.
     vibrancy = 0.10,
     vibrancy_darkness = 0.06,
+
+    -- Blur translucent application popup/context menus.
+    popups = true,
+    popups_ignorealpha = 0.12,
 },
     },
 
