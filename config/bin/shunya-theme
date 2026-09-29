@@ -670,9 +670,9 @@ for mode, path in themes.items():
         },
         "ItemView": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
-            "text.press.color": palette["onAccent"],
-            "text.toggle.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
+            "text.press.color": palette["text"],
+            "text.toggle.color": palette["text"],
         },
         "MenuItem": {
             "text.normal.color": palette["text"],
@@ -916,10 +916,85 @@ for version in ("gtk-3.0", "gtk-4.0"):
     path.write_text(css)
 PY
 
-
 # ---------------------------------------------------------------------------
 # KDE application color schemes
 # ---------------------------------------------------------------------------
+
+python3 - "$THEME_FILE" <<'PY'
+import json
+from pathlib import Path
+
+data = json.load(open(__import__("sys").argv[1]))
+
+scheme_dir = Path.home() / ".local/share/color-schemes"
+scheme_dir.mkdir(parents=True, exist_ok=True)
+
+
+def rgb(hex_color):
+    value = hex_color.lstrip("#")
+    return ",".join(
+        str(int(value[i:i + 2], 16))
+        for i in (0, 2, 4)
+    )
+
+
+for mode, name in (
+    ("dark", "SHUNYA Dark"),
+    ("light", "SHUNYA Light"),
+):
+    p = data[mode]
+
+    background = rgb(p["background"])
+    surface = rgb(p["surface"])
+    text = rgb(p["text"])
+    muted = rgb(p["muted"])
+    accent = rgb(p["accent"])
+    on_accent = rgb(p["onAccent"])
+
+    scheme = f"""[General]
+Name={name}
+
+[Colors:View]
+BackgroundNormal={background}
+BackgroundAlternate={surface}
+ForegroundNormal={text}
+ForegroundInactive={muted}
+ForegroundLink={accent}
+DecorationFocus={accent}
+DecorationHover={accent}
+
+[Colors:Window]
+BackgroundNormal={background}
+ForegroundNormal={text}
+ForegroundInactive={muted}
+
+[Colors:Button]
+BackgroundNormal={surface}
+ForegroundNormal={text}
+ForegroundInactive={muted}
+DecorationFocus={accent}
+DecorationHover={accent}
+
+[Colors:Selection]
+BackgroundNormal={accent}
+ForegroundNormal={on_accent}
+BackgroundAlternate={accent}
+ForegroundInactive={on_accent}
+
+[Colors:Tooltip]
+BackgroundNormal={surface}
+ForegroundNormal={text}
+"""
+
+    filename = (
+        "SHUNYA-Dark.colors"
+        if mode == "dark"
+        else "SHUNYA-Light.colors"
+    )
+
+    (scheme_dir / filename).write_text(scheme)
+PY
+
 
 if command -v kwriteconfig6 >/dev/null 2>&1; then
     if [[ "$mode" == "dark" ]]; then
@@ -928,21 +1003,18 @@ if command -v kwriteconfig6 >/dev/null 2>&1; then
         kde_app_scheme="SHUNYA-Light"
     fi
 
-    # Dolphin
     kwriteconfig6 \
         --file dolphinrc \
         --group UiSettings \
         --key ColorScheme \
         "$kde_app_scheme"
 
-    # Okular
     kwriteconfig6 \
         --file okularrc \
         --group UiSettings \
         --key ColorScheme \
         "$kde_app_scheme"
 fi
-
 
 # ---------------------------------------------------------------------------
 # Activate Kvantum mode
