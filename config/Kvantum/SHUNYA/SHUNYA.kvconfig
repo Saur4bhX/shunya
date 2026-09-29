@@ -355,17 +355,19 @@ frame=true
 frame.element=menuitem
 interior.element=menuitem
 indicator.element=menuitem
+text.press.color=white
+text.toggle.color=white
 text.normal.color=#ffffffc8
 text.focus.color=white
 text.margin.top=1
 text.margin.bottom=1
-text.margin.left=15
-text.margin.right=5
-frame.top=3
-frame.bottom=3
-frame.left=3
-frame.right=3
-frame.expansion=0
+text.margin.left=10
+text.margin.right=8
+frame.top=1
+frame.bottom=1
+frame.left=2
+frame.right=2
+frame.expansion=4
 
 [MenuBar]
 inherits=PanelButtonCommand

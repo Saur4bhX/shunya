@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
 THEME_FILE="$HOME/.config/shunya/theme.json"
@@ -342,8 +343,8 @@ wallpaper=$(python3 -c \
 )
 
 if [[ -n "$wallpaper" ]] &&
-    command -v hyprctl >/dev/null 2>&1 &&
-    pgrep -x hyprpaper >/dev/null 2>&1; then
+   command -v hyprctl >/dev/null 2>&1 &&
+   pgrep -x hyprpaper >/dev/null 2>&1; then
 
     hyprctl hyprpaper wallpaper \
         ",$wallpaper,cover" \
@@ -361,7 +362,7 @@ mode=$(python3 -c \
 # ---------------------------------------------------------------------------
 
 if command -v hyprctl >/dev/null 2>&1 &&
-    hyprctl monitors -j >/dev/null 2>&1; then
+   hyprctl monitors -j >/dev/null 2>&1; then
 
     read -r hypr_accent hypr_border < <(
         python3 - "$THEME_FILE" <<'PY'
@@ -387,6 +388,7 @@ PY
         } } })" \
         >/dev/null
 fi
+
 
 # ---------------------------------------------------------------------------
 # Qt5ct + Qt6ct palettes
@@ -619,7 +621,7 @@ for mode, path in themes.items():
     section_replacements = {
         "PanelButtonCommand": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
@@ -628,27 +630,27 @@ for mode, path in themes.items():
         },
         "DockTitle": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
         "IndicatorSpinBox": {
             "text.normal.color": palette["text"],
         },
         "RadioButton": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
         "CheckBox": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
         "ToolboxTab": {
             "text.normal.color": palette["text"],
             "text.press.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
         "Tab": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
             "text.toggle.color": palette["accent"],
         },
         "HeaderSection": {
@@ -658,23 +660,25 @@ for mode, path in themes.items():
         },
         "Toolbar": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
         "Progressbar": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
         "ItemView": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
         "MenuItem": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
+            "text.press.color": palette["text"],
+            "text.toggle.color": palette["text"],
         },
         "MenuBarItem": {
             "text.normal.color": palette["text"],
@@ -682,7 +686,7 @@ for mode, path in themes.items():
         },
         "TitleBar": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
         "ComboBox": {
             "text.press.color": palette["onAccent"],
@@ -692,7 +696,7 @@ for mode, path in themes.items():
         },
         "GroupBox": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["text"],
+            "text.focus.color": palette["onAccent"],
         },
     }
 
@@ -914,21 +918,29 @@ PY
 
 
 # ---------------------------------------------------------------------------
-# Dolphin color scheme
+# KDE application color schemes
 # ---------------------------------------------------------------------------
 
 if command -v kwriteconfig6 >/dev/null 2>&1; then
     if [[ "$mode" == "dark" ]]; then
-        dolphin_scheme="KvDark"
+        kde_app_scheme="SHUNYA-Dark"
     else
-        dolphin_scheme="KvFlatLight"
+        kde_app_scheme="SHUNYA-Light"
     fi
 
+    # Dolphin
     kwriteconfig6 \
         --file dolphinrc \
         --group UiSettings \
         --key ColorScheme \
-        "$dolphin_scheme"
+        "$kde_app_scheme"
+
+    # Okular
+    kwriteconfig6 \
+        --file okularrc \
+        --group UiSettings \
+        --key ColorScheme \
+        "$kde_app_scheme"
 fi
 
 
@@ -1086,11 +1098,11 @@ else:
 lines = [
     "# Generated by shunya-theme. Do not edit.",
     "",
-    
+
     "# Window",
     f"background_opacity {kitty_opacity}",
     "",
-    
+
     "# Core",
     f"background {kitty_background}",
     f"foreground {kitty_text}",
@@ -1145,6 +1157,7 @@ PY
 if pgrep -x kitty >/dev/null 2>&1; then
     pkill -USR1 -x kitty 2>/dev/null || true
 fi
+
 
 # ---------------------------------------------------------------------------
 # Zathura palette
