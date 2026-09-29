@@ -621,7 +621,7 @@ for mode, path in themes.items():
     section_replacements = {
         "PanelButtonCommand": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
             "text.press.color": palette["onAccent"],
             "text.toggle.color": palette["onAccent"],
         },
@@ -630,37 +630,37 @@ for mode, path in themes.items():
         },
         "DockTitle": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
         "IndicatorSpinBox": {
             "text.normal.color": palette["text"],
         },
         "RadioButton": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
         "CheckBox": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
         "ToolboxTab": {
             "text.normal.color": palette["text"],
-            "text.press.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.press.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
         "Tab": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
-            "text.toggle.color": palette["accent"],
+            "text.focus.color": palette["text"],
+            "text.toggle.color": palette["text"],
         },
         "HeaderSection": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["accent"],
+            "text.focus.color": palette["text"],
             "text.toggle.color": palette["text"],
         },
         "Toolbar": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
         "Progressbar": {
             "text.normal.color": palette["text"],
@@ -686,17 +686,17 @@ for mode, path in themes.items():
         },
         "TitleBar": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
         "ComboBox": {
-            "text.press.color": palette["onAccent"],
+            "text.press.color": palette["text"],
         },
         "Menu": {
             "text.normal.color": palette["text"],
         },
         "GroupBox": {
             "text.normal.color": palette["text"],
-            "text.focus.color": palette["onAccent"],
+            "text.focus.color": palette["text"],
         },
     }
 
